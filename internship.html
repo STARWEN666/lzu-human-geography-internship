@@ -147,32 +147,23 @@
         <div class="map-toolbar">
           <div>
             <strong>交互式路线图</strong>
-            <div class="subtle">底图切换为百度地图经典 2D 版；首次打开需填入百度地图开放平台“浏览器端 AK”。</div>
+            <div class="subtle">底图使用百度地图经典 2D 版，点位坐标已按 BD-09 显示。</div>
           </div>
           <div class="tools">
             <button class="tool-btn" onclick="showAll()">显示全程</button>
-            <button class="tool-btn" onclick="showAkPanel()">设置百度AK</button>
             <button class="tool-btn" onclick="toggleMarkers()">显示/隐藏点位</button>
             <button class="tool-btn" onclick="window.print()">打印/导出 PDF</button>
           </div>
           <div class="legend" id="legend"></div>
         </div>
         <div id="map"></div>
-        <div class="map-note">注：折线用于表达考察动线与空间逻辑，不等同于实时导航轨迹；百度地图需联网并配置浏览器端 AK。大巴停车点、上下客点、讲解预约点需由带队老师在出发前电话确认。</div>
+        <div class="map-note">注：折线用于表达考察动线与空间逻辑，不等同于实时导航轨迹；百度地图需联网加载。大巴停车点、上下客点、讲解预约点需由带队老师在出发前电话确认。</div>
       </section>
     </section>
 
     <section class="grid home-view" id="homeView">
-      <article class="card span-12">
-        <h2>一、路线逻辑</h2>
-        <div class="callout ok"><b>空间主线：</b>行程按照“河湟谷地—高原省会—临夏盆地—兰州返程”的区域梯度展开，串联史前聚落、现代农业、民族乡村、城市生态、历史街区与县域产业园区。</div>
-        <div class="callout warn"><b>里程提示：</b>全程教学执行里程约850—930公里，正式出行以实时导航、场馆开放公告、学校审批和安全预案为准。</div>
-        <p>整体动线为：兰州大学 → 海东乐都/平安 → 互助 → 西宁 → 塔尔寺/黄河上游通道 → 临夏 → 东乡达板 → 兰州大学。该线路兼顾大一学生认知实习的可理解性、观察连续性与安全冗余。</p>
-        <p><b>人员组织：</b>本次实习按33人组织，包括30名大一学生、2名研究生助教和1名带队老师。建议30名学生分为5个小组，每组6人；2名研究生助教分别负责队伍前后衔接、点名、材料收集、路线提醒和现场秩序辅助；带队老师负责教学讲解、行程决策、外联协调与安全总负责。</p>
-      </article>
-
       <article class="card span-7">
-        <h2>二、每日行程总表</h2>
+        <h2>一、每日行程总表</h2>
         <table>
           <thead><tr><th>日期</th><th>住宿</th><th>主题</th><th>主考察点</th><th>里程/强度</th></tr></thead>
           <tbody id="summaryTable"></tbody>
@@ -180,7 +171,7 @@
       </article>
 
       <article class="card span-5">
-        <h2>三、预算安排</h2>
+        <h2>二、预算安排</h2>
         <table>
           <thead><tr><th>项目</th><th>建议口径</th><th>金额</th></tr></thead>
           <tbody>
@@ -195,7 +186,7 @@
       </article>
 
       <article class="card span-6">
-        <h2>四、教学组织设计</h2>
+        <h2>三、教学组织设计</h2>
         <ul class="two-col">
           <li><b>分组：</b>5组×6人，每组设组长、记录员、地图员、访谈员、安全员、摄影/资料员。</li>
           <li><b>方法：</b>样线观察、土地利用快速判读、街巷空间速写、半结构访谈、POI记录、比较分析。</li>
@@ -207,7 +198,7 @@
       </article>
 
       <article class="card span-6">
-        <h2>五、出发前确认清单</h2>
+        <h2>四、出发前确认清单</h2>
         <div class="check-grid">
           <div class="check"><b>预约</b>柳湾彩陶博物馆、海东/西宁规划类场馆、互助产业园、东乡开发区座谈。</div>
           <div class="check"><b>安全</b>旅游意外险、学生与研究生助教紧急联系人、药品包、防晒、雨具、晕车药、每日点名表。</div>
@@ -219,13 +210,13 @@
       </article>
 
       <article class="card span-12">
-        <h2>六、点位索引与导航</h2>
+        <h2>五、点位索引与导航</h2>
         <div class="subtle">首页仅保留点位索引和快速导航。点击“查看详情”进入二级页面，阅读完整点位介绍、观察重点、现场任务、建议产出和注意事项。</div>
         <div id="pointIndex" class="point-index"></div>
       </article>
 
       <article class="card span-12">
-        <h2>七、参考依据</h2>
+        <h2>六、参考依据</h2>
         <ol class="source-list">
           <li>青海柳湾彩陶博物馆位于海东市乐都区柳湾村，依托柳湾遗址建设，彩陶专题性强，适合作为河湟史前聚落认知点。</li>
           <li>海东市城市规划展览馆位于南凉遗址公园西南角，兼具规划展览、旅游接待与遗址展示功能，适合衔接“历史遗址—当代城市规划”。</li>
@@ -764,8 +755,7 @@ let markerVisible = true;
 let markerOverlays = [];
 let routeLayers = {};
 let activeRouteOverlays = [];
-const BAIDU_AK = '5ZOR4crpM1a4G9oEWcsc7wsFa8XR36rP'; // 百度地图开放平台“浏览器端 AK”。正式发布请设置 Referer 白名单。
-const AK_STORAGE_KEY = 'lzu_human_geo_baidu_ak';
+const BAIDU_AK = '5ZOR4crpM1a4G9oEWcsc7wsFa8XR36rP';
 
 function pointById(id){return points.find(p=>p.id===id)}
 
@@ -908,37 +898,20 @@ function toggleMarkers(){
 }
 function getBaiduAK(){
   const params = new URLSearchParams(window.location.search);
-  return (params.get('ak') || localStorage.getItem(AK_STORAGE_KEY) || BAIDU_AK || '').trim();
+  return (params.get('ak') || BAIDU_AK || '').trim();
 }
 function showAkPanel(message=''){
   const mapEl = document.getElementById('map');
   mapEl.innerHTML = `<div class="ak-panel">
-    <h3>需要配置百度地图浏览器端 AK</h3>
-    <p>百度地图 JS API 需要通过 AK 鉴权。请输入在百度地图开放平台申请的“浏览器端 AK”；该值只保存在本机浏览器 localStorage 中。</p>
-    <div class="ak-row">
-      <input id="baiduAkInput" type="text" placeholder="粘贴百度地图浏览器端 AK" autocomplete="off" />
-      <button onclick="saveBaiduAk()">加载百度地图</button>
-      <button class="secondary" onclick="clearBaiduAk()">清除本机 AK</button>
-    </div>
-    <p class="subtle">当前文件已写入百度地图浏览器端 AK。正式分发给师生前，请在百度控制台设置合理的 Referer 白名单。</p>
+    <h3>地图加载异常</h3>
+    <p>百度地图暂时没有成功加载，请检查网络连接、浏览器安全设置或稍后刷新页面。</p>
     ${message ? `<div class="map-status">${message}</div>` : ''}
   </div>`;
-}
-function saveBaiduAk(){
-  const input = document.getElementById('baiduAkInput');
-  const ak = input ? input.value.trim() : '';
-  if(!ak){showAkPanel('AK 不能为空。'); return;}
-  localStorage.setItem(AK_STORAGE_KEY, ak);
-  loadBaiduMap(ak);
-}
-function clearBaiduAk(){
-  localStorage.removeItem(AK_STORAGE_KEY);
-  showAkPanel('已清除本机保存的 AK。');
 }
 function loadBaiduMap(ak){
   if(!ak){showAkPanel(); return;}
   const mapEl = document.getElementById('map');
-  mapEl.innerHTML = '<div class="ak-panel"><h3>正在加载百度地图……</h3><p>如果长期停留在此状态，请检查网络、AK 类型与 Referer 白名单。</p></div>';
+  mapEl.innerHTML = '<div class="ak-panel"><h3>正在加载百度地图……</h3><p>如果长期停留在此状态，请检查网络连接或刷新页面。</p></div>';
   if(window.BMap){initBaiduMap(); return;}
   const old = document.getElementById('baiduMapScript');
   if(old) old.remove();
@@ -946,14 +919,14 @@ function loadBaiduMap(ak){
   script.id = 'baiduMapScript';
   window.__lzuBaiduReady = function(){
     if(window.BMap) initBaiduMap();
-    else showAkPanel('百度地图脚本已返回，但 BMap 未成功初始化。请确认 AK 是否为浏览器端 AK，并检查 Referer 白名单。');
+    else showAkPanel('百度地图脚本已返回，但地图对象未成功初始化。');
   };
   script.src = 'https://api.map.baidu.com/api?v=3.0&ak=' + encodeURIComponent(ak) + '&callback=__lzuBaiduReady';
-  script.onerror = () => showAkPanel('百度地图脚本加载失败。请检查网络连接、浏览器安全设置或 AK 权限。');
+  script.onerror = () => showAkPanel('百度地图脚本加载失败。请检查网络连接或浏览器安全设置。');
   document.head.appendChild(script);
   setTimeout(()=>{
     if(!window.BMap && document.getElementById('baiduMapScript')){
-      showAkPanel('百度地图仍未初始化。常见原因：AK 不是浏览器端、Referer 白名单不匹配、直接用 file:// 打开、本机网络拦截 api.map.baidu.com。');
+      showAkPanel('百度地图仍未初始化。常见原因：网络拦截、浏览器安全设置，或直接用本地文件方式打开页面。');
     }
   }, 8000);
 }
