@@ -62,6 +62,9 @@
     .route-line{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
     .route-node{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 10px}
     .arrow{color:var(--muted)}
+    #baiduMap{height:520px;border:1px solid var(--line);border-radius:10px;background:#e8e2d8;margin:12px 0;overflow:hidden}
+    .map-status{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;margin:8px 0;color:var(--muted)}
+    .map-note{font-size:13px;color:var(--muted);margin-top:8px}
     .checklist{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
     .checklist fieldset{border:1px solid var(--line);border-radius:10px;background:#fff;padding:12px}
     .checklist legend{font-weight:800;color:var(--brand)}
@@ -116,7 +119,10 @@
 
     <section class="card" aria-labelledby="route-overview">
       <h2 id="route-overview">路线概览</h2>
-      <p class="muted">本页采用无密钥、无精确坐标模式。点位以名称搜索导航为主，未确认点位不提供精确坐标；即使地图服务加载失败，点位列表和搜索导航链接仍可使用。</p>
+      <p class="muted">本页使用百度地图 AK 加载路线图，并按点位名称/区县实时解析坐标。地图用于出发前核验和空间认知；若个别点位解析不准，以带队老师最终确认地址和手机实时导航为准。</p>
+      <div id="baiduMap" role="img" aria-label="百度地图路线示意"></div>
+      <div id="mapStatus" class="map-status">正在加载百度地图并解析点位坐标……</div>
+      <p class="map-note">说明：地图会显示当前草案点位标记和路线折线；酒店候选仅提供搜索入口，不在地图上固定坐标。</p>
       <div id="routeOverview"></div>
     </section>
 
@@ -245,6 +251,7 @@
   </footer>
 
   <script>
+    const BAIDU_AK = "5ZOR4crpM1a4G9oEWcsc7wsFa8XR36rP";
     const statusClass = {
       "已建议保留":"status-keep",
       "需核验":"status-check",
@@ -281,6 +288,28 @@
       {day:"5",name:"临夏八坊十三巷",place:"甘肃省临夏市",status:"已建议保留",theme:"历史街区、民族社区、非遗业态、旅游更新",task:"街巷空间观察、业态记录、游客—居民关系观察。",nav:"临夏 八坊十三巷",note:"团队步行控制队形，不影响游客和居民通行。"},
       {day:"5",name:"东公馆",place:"甘肃省临夏市",status:"备选点",theme:"历史建筑、地方文化、城市记忆",task:"观察宅院空间、建筑装饰、地方文化展示与公共文化利用。",nav:"临夏 东公馆",note:"需核验开放时间和团队接待情况。"},
       {day:"5",name:"东乡经济开发区 / 达板镇",place:"临夏州东乡族自治县",status:"需核验",theme:"县域产业园区、就业联系、民族地区产业发展",task:"观察产业园区位、就业联系、安置区联动和镇区服务配套。",nav:"东乡经济开发区 达板镇",note:"如果无法预约座谈，改为车上观察或取消。"}
+    ];
+    const mapStops = [
+      {day:"1", name:"兰州大学榆中校区", query:"兰州大学榆中校区", city:"兰州市"},
+      {day:"1", name:"民和工业园", query:"民和工业园", city:"海东市"},
+      {day:"1", name:"柳湾彩陶博物馆", query:"青海柳湾彩陶博物馆", city:"海东市"},
+      {day:"1", name:"海东市规划/城市展示类场馆", query:"海东市规划展览馆", city:"海东市"},
+      {day:"1/2", name:"海东/互助住宿候选区", query:"海东市平安区", city:"海东市"},
+      {day:"2", name:"互助国家现代农业产业园", query:"互助国家现代农业产业园", city:"海东市"},
+      {day:"2", name:"互助土族故土园/小庄/班彦择选", query:"互助土族故土园", city:"海东市"},
+      {day:"2/3", name:"西宁住宿候选区", query:"西宁市城中区大十字", city:"西宁市"},
+      {day:"3", name:"西宁海湖新区", query:"西宁海湖新区", city:"西宁市"},
+      {day:"3", name:"西宁城市生态修复观察点", query:"西宁火烧沟生态修复", city:"西宁市"},
+      {day:"3", name:"城郊农业观察点", query:"西宁城北红星农场", city:"西宁市"},
+      {day:"3", name:"莫家街—宏觉寺街区", query:"西宁莫家街宏觉寺街区", city:"西宁市"},
+      {day:"4", name:"化隆群科新区/拉面产业园", query:"化隆群科新区拉面产业园", city:"海东市"},
+      {day:"4", name:"塔尔寺与鲁沙尔镇", query:"塔尔寺 鲁沙尔镇", city:"西宁市"},
+      {day:"4", name:"循化/积石山沿黄通道", query:"循化县", city:"海东市"},
+      {day:"4", name:"临夏住宿候选区", query:"临夏市八坊十三巷", city:"临夏回族自治州"},
+      {day:"5", name:"临夏八坊十三巷", query:"临夏八坊十三巷", city:"临夏回族自治州"},
+      {day:"5", name:"东公馆", query:"临夏东公馆", city:"临夏回族自治州"},
+      {day:"5", name:"东乡经济开发区/达板镇", query:"东乡经济开发区 达板镇", city:"临夏回族自治州"},
+      {day:"5", name:"兰州大学榆中校区", query:"兰州大学榆中校区", city:"兰州市"}
     ];
     function encode(value){return encodeURIComponent(value)}
     function amap(keyword){return `https://uri.amap.com/search?keyword=${encode(keyword)}`}
@@ -362,11 +391,86 @@
         card.classList.toggle("hide", !show);
       });
     }
+    function loadBaiduMap(){
+      const status = document.getElementById("mapStatus");
+      if(!BAIDU_AK){
+        status.textContent = "未配置百度地图 AK，路线图暂不可用；下方搜索导航仍可使用。";
+        return;
+      }
+      window.__initLzuBaiduMap = initBaiduMap;
+      const script = document.createElement("script");
+      script.src = `https://api.map.baidu.com/api?v=3.0&ak=${encodeURIComponent(BAIDU_AK)}&callback=__initLzuBaiduMap`;
+      script.onerror = () => {
+        status.textContent = "百度地图脚本加载失败；下方点位搜索导航仍可使用。";
+      };
+      document.head.appendChild(script);
+    }
+    function geocodePoint(geocoder, stop){
+      return new Promise(resolve => {
+        geocoder.getPoint(stop.query, point => {
+          resolve(point ? {...stop, point} : {...stop, point:null});
+        }, stop.city);
+      });
+    }
+    async function initBaiduMap(){
+      const status = document.getElementById("mapStatus");
+      if(!window.BMap){
+        status.textContent = "百度地图对象未成功初始化；下方点位搜索导航仍可使用。";
+        return;
+      }
+      const map = new BMap.Map("baiduMap");
+      map.enableScrollWheelZoom(true);
+      map.addControl(new BMap.NavigationControl());
+      map.addControl(new BMap.ScaleControl());
+      const geocoder = new BMap.Geocoder();
+      const resolved = [];
+      for(const stop of mapStops){
+        const result = await geocodePoint(geocoder, stop);
+        resolved.push(result);
+      }
+      const ok = resolved.filter(item => item.point);
+      if(!ok.length){
+        status.textContent = "百度地图已加载，但点位名称未解析成功；请使用下方搜索导航。";
+        return;
+      }
+      const colors = {"1":"#2f6b4f","2":"#2d6f91","3":"#7b5aa6","4":"#b26b2b","5":"#9b3d3d"};
+      ok.forEach((item, index) => {
+        const marker = new BMap.Marker(item.point);
+        const label = new BMap.Label(`${index + 1}. ${item.name}`, {offset:new BMap.Size(20,-10)});
+        marker.setLabel(label);
+        marker.addEventListener("click", () => {
+          const html = `<strong>${index + 1}. ${item.name}</strong><br>Day ${item.day}<br>百度解析：${item.point.lat.toFixed(6)}, ${item.point.lng.toFixed(6)}<br><span style="color:#666">请以最终确认地址和实时导航为准。</span>`;
+          map.openInfoWindow(new BMap.InfoWindow(html, {width:260}), item.point);
+        });
+        map.addOverlay(marker);
+      });
+      const byDay = {};
+      ok.forEach(item => {
+        const day = String(item.day).split("/")[0];
+        if(!byDay[day]) byDay[day] = [];
+        byDay[day].push(item.point);
+      });
+      Object.keys(byDay).forEach(day => {
+        if(byDay[day].length > 1){
+          map.addOverlay(new BMap.Polyline(byDay[day], {
+            strokeColor: colors[day] || "#275247",
+            strokeWeight: 5,
+            strokeOpacity: .85
+          }));
+        }
+      });
+      map.setViewport(ok.map(item => item.point), {margins:[60,40,40,40]});
+      const failed = resolved.filter(item => !item.point).map(item => item.name);
+      status.textContent = failed.length
+        ? `百度地图已加载，${ok.length}个点位解析成功；未解析：${failed.join("、")}。`
+        : `百度地图已加载，${ok.length}个点位已按名称解析并显示路线。`;
+    }
     renderItinerary();
     renderRoute();
     renderHotels();
     renderPoints();
     filterPoints("all");
+    loadBaiduMap();
   </script>
 </body>
 </html>
