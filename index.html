@@ -152,7 +152,7 @@
     <section class="layout">
       <aside class="panel">
         <h2>行程快速查看</h2>
-        <div class="subtle">点击日期可在地图中聚焦当天路线；点位数据采用高德 GCJ-02 坐标存储，网页自动转换为百度 BD-09 显示；出行前仍应以百度/高德实时导航与预约确认信息为准。</div>
+        <div class="subtle">点击日期可在地图中聚焦当天路线；点位按来源标注坐标系，网页自动转换为百度 BD-09 显示；出行前仍应以百度/高德实时导航与预约确认信息为准。</div>
         <div class="day-buttons" id="dayButtons"></div>
         <div id="dayDetail"></div>
       </aside>
@@ -161,7 +161,7 @@
         <div class="map-toolbar">
           <div>
             <strong>交互式路线图</strong>
-            <div class="subtle">底图使用百度地图经典 2D 版；AK 已嵌入，点位已按高德坐标校核并自动转换为百度坐标显示。</div>
+            <div class="subtle">底图使用百度地图经典 2D 版；AK 已嵌入，静态点位会按坐标系自动转换为百度坐标显示。</div>
           </div>
           <div class="tools">
             <button class="tool-btn" onclick="showAll()">显示全程</button>
@@ -436,7 +436,7 @@ const points = [
     ],
     "output": "1张“遗址—村落—河谷”空间关系草图；3条聚落选址解释。",
     "note": "馆内注意安静参观，拍摄展品应遵守馆方规定。",
-    "coordSys": "gcj02"
+    "coordSys": "wgs84"
   },
   {
     "id": 2,
@@ -459,7 +459,7 @@ const points = [
     ],
     "output": "城市功能分区速记表；1段遗址公园复合利用评价。",
     "note": "规划类场馆需提前核实开放时间；若无法入馆，可改为外部公共空间观察。",
-    "coordSys": "gcj02"
+    "coordSys": "wgs84"
   },
   {
     "id": 3,
@@ -482,7 +482,7 @@ const points = [
     ],
     "output": "住宿点周边10分钟生活圈草图。",
     "note": "夜间观察须结伴进行，限定时间和范围。",
-    "coordSys": "gcj02"
+    "coordSys": "wgs84"
   },
   {
     "id": 4,
@@ -528,7 +528,7 @@ const points = [
     ],
     "output": "民俗旅游空间剖面图；文化景观照片说明。",
     "note": "涉及人物、宗教或民俗活动拍摄前应征得同意。",
-    "coordSys": "gcj02"
+    "coordSys": "wgs84"
   },
   {
     "id": 7,
@@ -747,7 +747,7 @@ const points = [
     ],
     "output": "沿线观察速记图；交通—地形关系说明。",
     "note": "以车上观察为主，不随意停车；若停车拍照须选择安全区域。",
-    "coordSys": "gcj02"
+    "coordSys": "wgs84"
   },
   {
     "id": 15,
@@ -770,7 +770,7 @@ const points = [
     ],
     "output": "景观转换记录表；区域联系关键词卡片。",
     "note": "该点以宏观观察为主，必要时可作为车上专题讲解点。",
-    "coordSys": "gcj02"
+    "coordSys": "wgs84"
   },
   {
     "id": 16,
@@ -862,7 +862,7 @@ const points = [
     ],
     "output": "产业园区逻辑链图；座谈纪要或问题清单。",
     "note": "务必提前预约；若无法入园，可在达板镇外围观察并改为枹罕镇特色农业点。",
-    "coordSys": "gcj02"
+    "coordSys": "wgs84"
   }
 ];
 
@@ -974,7 +974,7 @@ const BAIDU_AK = '5ZOR4crpM1a4G9oEWcsc7wsFa8XR36rP'; // 百度地图开放平台
 
 function pointById(id){return points.find(p=>p.id===id)}
 
-// 原始点位统一按高德 GCJ-02 坐标存储；百度地图显示时转换为 BD-09。正式出行前建议用高德/百度逐点复核停车点与上下客点。
+// 静态点位按来源标注坐标系；百度地图显示时统一转换为 BD-09。正式出行前建议用高德/百度逐点复核停车点与上下客点。
 function outOfChina(lng, lat){return lng < 72.004 || lng > 137.8347 || lat < 0.8293 || lat > 55.8271}
 function transformLat(x, y){
   let ret = -100.0 + 2.0*x + 3.0*y + 0.2*y*y + 0.1*x*y + 0.2*Math.sqrt(Math.abs(x));
