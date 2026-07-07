@@ -119,9 +119,9 @@
 
     <section class="card" aria-labelledby="route-overview">
       <h2 id="route-overview">路线概览</h2>
-      <p class="muted">本页使用百度地图 AK 加载路线图，并按点位名称/区县实时解析坐标。地图用于出发前核验和空间认知；若个别点位解析不准，以带队老师最终确认地址和手机实时导航为准。</p>
+      <p class="muted">本页使用百度地图 AK 加载路线图，并使用已写入页面的静态点位坐标绘制标记和路线。地图用于出发前核验和空间认知；正式出行仍以带队老师最终确认地址和手机实时导航为准。</p>
       <div id="baiduMap" role="img" aria-label="百度地图路线示意"></div>
-      <div id="mapStatus" class="map-status">正在加载百度地图并解析点位坐标……</div>
+      <div id="mapStatus" class="map-status">正在加载百度地图并绘制静态点位路线……</div>
       <p class="map-note">说明：地图会显示当前草案点位标记和路线折线；酒店候选仅提供搜索入口，不在地图上固定坐标。</p>
       <div id="routeOverview"></div>
     </section>
@@ -290,26 +290,26 @@
       {day:"5",name:"东乡经济开发区 / 达板镇",place:"临夏州东乡族自治县",status:"需核验",theme:"县域产业园区、就业联系、民族地区产业发展",task:"观察产业园区位、就业联系、安置区联动和镇区服务配套。",nav:"东乡经济开发区 达板镇",note:"如果无法预约座谈，改为车上观察或取消。"}
     ];
     const mapStops = [
-      {day:"1", name:"兰州大学榆中校区", query:"兰州大学榆中校区", city:"兰州市"},
-      {day:"1", name:"民和工业园", query:"民和工业园", city:"海东市"},
-      {day:"1", name:"柳湾彩陶博物馆", query:"青海柳湾彩陶博物馆", city:"海东市"},
-      {day:"1", name:"海东市规划/城市展示类场馆", query:"海东市规划展览馆", city:"海东市"},
-      {day:"1/2", name:"海东/互助住宿候选区", query:"海东市平安区", city:"海东市"},
-      {day:"2", name:"互助国家现代农业产业园", query:"互助国家现代农业产业园", city:"海东市"},
-      {day:"2", name:"互助土族故土园/小庄/班彦择选", query:"互助土族故土园", city:"海东市"},
-      {day:"2/3", name:"西宁住宿候选区", query:"西宁市城中区大十字", city:"西宁市"},
-      {day:"3", name:"西宁海湖新区", query:"西宁海湖新区", city:"西宁市"},
-      {day:"3", name:"西宁城市生态修复观察点", query:"西宁火烧沟生态修复", city:"西宁市"},
-      {day:"3", name:"城郊农业观察点", query:"西宁城北红星农场", city:"西宁市"},
-      {day:"3", name:"莫家街—宏觉寺街区", query:"西宁莫家街宏觉寺街区", city:"西宁市"},
-      {day:"4", name:"化隆群科新区/拉面产业园", query:"化隆群科新区拉面产业园", city:"海东市"},
-      {day:"4", name:"塔尔寺与鲁沙尔镇", query:"塔尔寺 鲁沙尔镇", city:"西宁市"},
-      {day:"4", name:"循化/积石山沿黄通道", query:"循化县", city:"海东市"},
-      {day:"4", name:"临夏住宿候选区", query:"临夏市八坊十三巷", city:"临夏回族自治州"},
-      {day:"5", name:"临夏八坊十三巷", query:"临夏八坊十三巷", city:"临夏回族自治州"},
-      {day:"5", name:"东公馆", query:"临夏东公馆", city:"临夏回族自治州"},
-      {day:"5", name:"东乡经济开发区/达板镇", query:"东乡经济开发区 达板镇", city:"临夏回族自治州"},
-      {day:"5", name:"兰州大学榆中校区", query:"兰州大学榆中校区", city:"兰州市"}
+      {day:"1", name:"兰州大学榆中校区", lat:35.94585, lng:104.160813},
+      {day:"1", name:"民和工业园", lat:36.32, lng:102.88},
+      {day:"1", name:"柳湾彩陶博物馆", lat:36.472, lng:102.45},
+      {day:"1", name:"海东市规划/城市展示类场馆", lat:36.485, lng:102.405},
+      {day:"1/2", name:"海东/互助住宿候选区", lat:36.5, lng:102.105},
+      {day:"2", name:"互助国家现代农业产业园", lat:36.8458, lng:101.9731},
+      {day:"2", name:"互助土族故土园/小庄/班彦择选", lat:36.823, lng:101.958},
+      {day:"2/3", name:"西宁住宿候选区", lat:36.6206, lng:101.782},
+      {day:"3", name:"西宁海湖新区", lat:36.641, lng:101.724},
+      {day:"3", name:"西宁城市生态修复观察点", lat:36.646, lng:101.707},
+      {day:"3", name:"城郊农业观察点", lat:36.668, lng:101.733},
+      {day:"3", name:"莫家街—宏觉寺街区", lat:36.621, lng:101.79},
+      {day:"4", name:"化隆群科新区/拉面产业园", lat:36.05, lng:102.27},
+      {day:"4", name:"塔尔寺与鲁沙尔镇", lat:36.489, lng:101.57},
+      {day:"4", name:"循化/积石山沿黄通道", lat:35.85, lng:102.49},
+      {day:"4", name:"临夏住宿候选区", lat:35.602, lng:103.205},
+      {day:"5", name:"临夏八坊十三巷", lat:35.602, lng:103.203},
+      {day:"5", name:"东公馆", lat:35.6, lng:103.222},
+      {day:"5", name:"东乡经济开发区/达板镇", lat:35.7155, lng:103.6312},
+      {day:"5", name:"兰州大学榆中校区", lat:35.94585, lng:104.160813}
     ];
     function encode(value){return encodeURIComponent(value)}
     function amap(keyword){return `https://uri.amap.com/search?keyword=${encode(keyword)}`}
@@ -405,14 +405,46 @@
       };
       document.head.appendChild(script);
     }
-    function geocodePoint(geocoder, stop){
-      return new Promise(resolve => {
-        geocoder.getPoint(stop.query, point => {
-          resolve(point ? {...stop, point} : {...stop, point:null});
-        }, stop.city);
-      });
+    function outOfChina(lng, lat){return lng < 72.004 || lng > 137.8347 || lat < 0.8293 || lat > 55.8271}
+    function transformLat(x, y){
+      let ret = -100.0 + 2.0*x + 3.0*y + 0.2*y*y + 0.1*x*y + 0.2*Math.sqrt(Math.abs(x));
+      ret += (20.0*Math.sin(6.0*x*Math.PI) + 20.0*Math.sin(2.0*x*Math.PI)) * 2.0 / 3.0;
+      ret += (20.0*Math.sin(y*Math.PI) + 40.0*Math.sin(y/3.0*Math.PI)) * 2.0 / 3.0;
+      ret += (160.0*Math.sin(y/12.0*Math.PI) + 320*Math.sin(y*Math.PI/30.0)) * 2.0 / 3.0;
+      return ret;
     }
-    async function initBaiduMap(){
+    function transformLng(x, y){
+      let ret = 300.0 + x + 2.0*y + 0.1*x*x + 0.1*x*y + 0.1*Math.sqrt(Math.abs(x));
+      ret += (20.0*Math.sin(6.0*x*Math.PI) + 20.0*Math.sin(2.0*x*Math.PI)) * 2.0 / 3.0;
+      ret += (20.0*Math.sin(x*Math.PI) + 40.0*Math.sin(x/3.0*Math.PI)) * 2.0 / 3.0;
+      ret += (150.0*Math.sin(x/12.0*Math.PI) + 300.0*Math.sin(x/30.0*Math.PI)) * 2.0 / 3.0;
+      return ret;
+    }
+    function wgs84ToGcj02(lng, lat){
+      if(outOfChina(lng, lat)) return [lng, lat];
+      const a = 6378245.0, ee = 0.00669342162296594323;
+      let dLat = transformLat(lng - 105.0, lat - 35.0);
+      let dLng = transformLng(lng - 105.0, lat - 35.0);
+      const radLat = lat / 180.0 * Math.PI;
+      let magic = Math.sin(radLat);
+      magic = 1 - ee * magic * magic;
+      const sqrtMagic = Math.sqrt(magic);
+      dLat = (dLat * 180.0) / ((a * (1 - ee)) / (magic * sqrtMagic) * Math.PI);
+      dLng = (dLng * 180.0) / (a / sqrtMagic * Math.cos(radLat) * Math.PI);
+      return [lng + dLng, lat + dLat];
+    }
+    function gcj02ToBd09(lng, lat){
+      const xPi = Math.PI * 3000.0 / 180.0;
+      const z = Math.sqrt(lng*lng + lat*lat) + 0.00002 * Math.sin(lat * xPi);
+      const theta = Math.atan2(lat, lng) + 0.000003 * Math.cos(lng * xPi);
+      return [z * Math.cos(theta) + 0.0065, z * Math.sin(theta) + 0.006];
+    }
+    function toBdPoint(stop){
+      const gcj = wgs84ToGcj02(stop.lng, stop.lat);
+      const bd = gcj02ToBd09(gcj[0], gcj[1]);
+      return new BMap.Point(bd[0], bd[1]);
+    }
+    function initBaiduMap(){
       const status = document.getElementById("mapStatus");
       if(!window.BMap){
         status.textContent = "百度地图对象未成功初始化；下方点位搜索导航仍可使用。";
@@ -422,24 +454,14 @@
       map.enableScrollWheelZoom(true);
       map.addControl(new BMap.NavigationControl());
       map.addControl(new BMap.ScaleControl());
-      const geocoder = new BMap.Geocoder();
-      const resolved = [];
-      for(const stop of mapStops){
-        const result = await geocodePoint(geocoder, stop);
-        resolved.push(result);
-      }
-      const ok = resolved.filter(item => item.point);
-      if(!ok.length){
-        status.textContent = "百度地图已加载，但点位名称未解析成功；请使用下方搜索导航。";
-        return;
-      }
+      const ok = mapStops.map(stop => ({...stop, point:toBdPoint(stop)}));
       const colors = {"1":"#2f6b4f","2":"#2d6f91","3":"#7b5aa6","4":"#b26b2b","5":"#9b3d3d"};
       ok.forEach((item, index) => {
         const marker = new BMap.Marker(item.point);
         const label = new BMap.Label(`${index + 1}. ${item.name}`, {offset:new BMap.Size(20,-10)});
         marker.setLabel(label);
         marker.addEventListener("click", () => {
-          const html = `<strong>${index + 1}. ${item.name}</strong><br>Day ${item.day}<br>百度解析：${item.point.lat.toFixed(6)}, ${item.point.lng.toFixed(6)}<br><span style="color:#666">请以最终确认地址和实时导航为准。</span>`;
+          const html = `<strong>${index + 1}. ${item.name}</strong><br>Day ${item.day}<br>原始坐标：${item.lat.toFixed(6)}, ${item.lng.toFixed(6)}<br>百度坐标：${item.point.lat.toFixed(6)}, ${item.point.lng.toFixed(6)}<br><span style="color:#666">请以最终确认地址和实时导航为准。</span>`;
           map.openInfoWindow(new BMap.InfoWindow(html, {width:260}), item.point);
         });
         map.addOverlay(marker);
@@ -460,10 +482,7 @@
         }
       });
       map.setViewport(ok.map(item => item.point), {margins:[60,40,40,40]});
-      const failed = resolved.filter(item => !item.point).map(item => item.name);
-      status.textContent = failed.length
-        ? `百度地图已加载，${ok.length}个点位解析成功；未解析：${failed.join("、")}。`
-        : `百度地图已加载，${ok.length}个点位已按名称解析并显示路线。`;
+      status.textContent = `百度地图已加载，${ok.length}个静态点位已显示并按日绘制路线。`;
     }
     renderItinerary();
     renderRoute();
