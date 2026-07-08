@@ -609,9 +609,9 @@ function gcj02ToBd09(lon, lat){
   const x = lon, y = lat; const z = Math.sqrt(x*x + y*y) + 0.00002 * Math.sin(y * Math.PI * 3000.0 / 180.0); const theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * Math.PI * 3000.0 / 180.0); return [z * Math.cos(theta) + 0.0065, z * Math.sin(theta) + 0.006];
 }
 function styleOf(day){ return DAY_STYLE[day] || {color:'#27452f',label:String(day||'').replace(/^7[.-]/,''),name:day||'点位'}; }
-function createDayIcon(p){
+function createDayIcon(p,labelOverride){
   const st = styleOf(p.day);
-  const label = st.label || String(p.day||'').slice(-2);
+  const label = labelOverride || st.label || String(p.day||'').slice(-2);
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="56" viewBox="0 0 48 56">
     <filter id="shadow" x="-30%" y="-20%" width="160%" height="160%"><feDropShadow dx="0" dy="3" stdDeviation="2.4" flood-color="#000" flood-opacity="0.25"/></filter>
     <path filter="url(#shadow)" d="M24 3C13.5 3 5 11.3 5 21.5c0 13.4 16.5 29.8 18.2 31.5a1.1 1.1 0 0 0 1.6 0C26.5 51.3 43 34.9 43 21.5 43 11.3 34.5 3 24 3Z" fill="${st.color}" stroke="#fff" stroke-width="2"/>
@@ -815,7 +815,10 @@ function rebuildMapOverlays(){
     const pt = new BMap.Point(p.bdLon,p.bdLat);
     const m = new BMap.Marker(pt, {icon:createDayIcon(p)}); markers[p.id]=m; map.addOverlay(m);
     m.setTitle(`${p.day} · ${p.name}（点击查看简介）`);
-    m.addEventListener('click',()=>{ new BMap.InfoWindow(popupHtml(p),{width:320}).open(map,pt); });
+    if(m.setTop){ m.setTop(true); }
+    if(m.setZIndex){ m.setZIndex(1000); }
+    m.addEventListener('click',()=>openDetail(p.id));
+    m.addEventListener('dblclick',()=>openDetail(p.id));
   });
   const active=document.querySelector('.buttons button.active');
   drawRoute(active ? active.dataset.day : '全部');
@@ -833,6 +836,23 @@ window.initMap=function(){
 function clearLines(){ polylines.forEach(l=>map.removeOverlay(l)); polylines=[]; }
 function routeDays(day){ if(day==='全部') return ROUTE_DAYS; return ROUTE_DAYS.includes(day)?[day]:[]; }
 function seqPoints(day){ return (ROUTE_SEQUENCES[day]||[]).map(id=>POINTS.find(p=>p.id===id)).filter(Boolean); }
+function markerLabelForDay(p,day){
+  if(day==='全部') return null;
+  const seq=seqPoints(day);
+  const idx=seq.findIndex(x=>x.id===p.id);
+  if(idx>=0) return String(idx+1);
+  const sameDay=POINTS.filter(x=>x.day===day);
+  const fallback=sameDay.findIndex(x=>x.id===p.id);
+  return fallback>=0 ? String(fallback+1) : null;
+}
+function updateMarkerLabels(day){
+  POINTS.forEach(p=>{
+    const marker=markers[p.id];
+    if(marker && marker.setIcon){ marker.setIcon(createDayIcon(p, markerLabelForDay(p,day))); }
+    if(marker && marker.setTop){ marker.setTop(true); }
+    if(marker && marker.setZIndex){ marker.setZIndex(1000); }
+  });
+}
 function addFallbackPolyline(arr, color='#8a3b2f'){
   if(arr.length<2) return [];
   const pts=arr.map(p=>new BMap.Point(p.bdLon,p.bdLat));
@@ -861,18 +881,19 @@ function drawDrivingRoute(arr, color='#8a3b2f'){
   try{ driving.search(start,end,{waypoints:waypoints}); }catch(e){ addFallbackPolyline(arr,color); }
   return pts;
 }
-function drawRoute(day){ if(!map) return; clearLines(); const days=routeDays(day); let bounds=[];
+function drawRoute(day){ if(!map) return; clearLines(); updateMarkerLabels(day); const days=routeDays(day); let bounds=[];
   days.forEach((d,i)=>{ const arr=seqPoints(d); if(arr.length>1){ bounds.push(...drawDrivingRoute(arr,styleOf(d).color)); } });
   if(days.length===0 && day!=='全部'){
     const arr=POINTS.filter(p=>p.day===day); if(arr.length>1) bounds.push(...addFallbackPolyline(arr));
   }
   const visible=day==='全部'?POINTS:POINTS.filter(p=>p.day===day);
   POINTS.forEach(p=>markers[p.id] && (visible.includes(p)?markers[p.id].show():markers[p.id].hide()));
+  Object.values(markers).forEach(m=>{ if(m.setTop){ m.setTop(true); } if(m.setZIndex){ m.setZIndex(1000); } });
   const pts=(visible.length?visible:POINTS).map(p=>new BMap.Point(p.bdLon,p.bdLat)); if(pts.length) map.setViewport(pts);
   document.querySelectorAll('.timeline-item[data-day], .route-summary-item[data-day], tr[data-day], .detail-card[data-day]').forEach(el=>{ const d=el.getAttribute('data-day'); if(day==='全部'||d===day||d==='') el.style.display=''; else el.style.display='none'; });
   document.querySelectorAll('.buttons button').forEach(b=>b.classList.toggle('active',b.dataset.day===day));
 }
-function focusPoint(id){ const p=POINTS.find(x=>x.id===id); if(!p||!map)return; const pt=new BMap.Point(p.bdLon,p.bdLat); map.centerAndZoom(pt,15); markers[id].show(); markers[id].dispatchEvent('click'); window.scrollTo({top:document.getElementById('map').offsetTop-80,behavior:'smooth'}); }
+function focusPoint(id){ const p=POINTS.find(x=>x.id===id); if(!p||!map)return; const pt=new BMap.Point(p.bdLon,p.bdLat); map.centerAndZoom(pt,15); if(markers[id]){ markers[id].show(); } openDetail(id); window.scrollTo({top:document.getElementById('map').offsetTop-80,behavior:'smooth'}); }
 function openDetail(id){ const p=POINTS.find(x=>x.id===id); if(!p)return; const modal=document.getElementById('modal'); document.getElementById('modalBody').innerHTML=`${imgTag(p,'')}<div class="modal-content"><button class="modal-close" onclick="closeDetail()">关闭</button><div class="tag">${p.day} · ${p.part} · ${p.type}</div><h2 style="color:#27452f;margin:10px 0">${p.name}</h2><p><strong>点位介绍：</strong>${p.intro}</p><p><strong>观察重点：</strong>${p.observe}</p><p><strong>现场任务：</strong>${p.task}</p><p><strong>建议产出：</strong>${p.output}</p><div class="link-row"><a class="mini-link" href="${amapNav(p)}" target="_blank">打开高德导航</a><button class="mini-link btn-like" onclick="focusPoint('${p.id}')">地图定位</button></div></div>`; modal.classList.add('open'); }
 function closeDetail(){ document.getElementById('modal').classList.remove('open'); }
 window.addEventListener('DOMContentLoaded', loadBaidu);
