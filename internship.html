@@ -34,6 +34,21 @@
 .coord-panel.show{display:block}.coord-panel strong{color:#27452f}.coord-panel .coord-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.coord-panel button{border:1px solid #d8e1d2;background:#fff;border-radius:999px;padding:6px 10px;color:#27452f;font-weight:700;cursor:pointer}.coord-log{max-height:120px;overflow:auto;background:#fff;border:1px solid #e1e6dc;border-radius:10px;padding:8px;margin-top:8px;white-space:pre-wrap;font-size:12px;color:#4e5d50}
 
 @media(max-width:860px){.map-wrap{grid-template-columns:1fr}.map{height:440px}.hero{padding:42px 0}.section{padding:24px 0}th,td{font-size:14px;padding:9px}.modal-box img{height:220px}}
+
+html,body,button,input,select,textarea,table,.popup-card{font-family:"Source Han Sans SC","Source Han Sans CN","Noto Sans CJK SC","Noto Sans SC","Microsoft YaHei",Arial,sans-serif}
+.auto-coord-status{margin:10px 0 0;color:#43573f;font-size:13px;background:#f8fbf4;border:1px solid #d8e1d2;border-radius:14px;padding:9px 12px}
+.route-summary{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow);margin:0}
+.route-summary h3{margin:0 0 12px;color:var(--deep);font-size:18px}
+.route-summary-item{border-left:4px solid #d9e4d4;padding:0 0 13px 13px;margin:0 0 14px}
+.route-summary-item:last-child{margin-bottom:0;padding-bottom:0}
+.route-summary-item b{color:var(--deep);display:block;line-height:1.5}
+.route-summary-meta{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.route-summary-meta span{background:#edf4e8;border:1px solid #d3dfcc;border-radius:999px;padding:2px 8px;font-size:12px;color:#325438}
+.route-summary-path{font-size:13px;color:#647064;margin:4px 0 7px}
+.route-summary-plan{margin:6px 0 0;padding-left:18px;color:#4d594d;font-size:13px;line-height:1.7}
+.map-panel{max-height:590px;overflow:auto}
+@media(max-width:860px){.route-summary{padding:13px}.route-summary-plan{font-size:12px}.auto-coord-status{font-size:12px}}
+
 </style>
 </head>
 <body>
@@ -59,8 +74,9 @@
 <div class="day-legend" id="dayLegend"></div>
 <p class="point-hint">地图上同一天的点位标记与路线使用同一颜色；点击点位标记可查看该点简介，点击“查看详细资料”可展开完整任务说明。点位图片已统一改为按坐标生成的必应地图影像，避免随机风景图与点位不符。点位坐标以已校核静态坐标为准，正式出行仍以实时导航为准。</p>
 <div class="buttons"><button class="active" data-day="全部" onclick="drawRoute('全部')">全部</button><button class="" data-day="7-13" onclick="drawRoute('7-13')">7-13</button><button class="" data-day="7-14" onclick="drawRoute('7-14')">7-14</button><button class="" data-day="7-15" onclick="drawRoute('7-15')">7-15</button><button class="" data-day="7-16" onclick="drawRoute('7-16')">7-16</button><button class="" data-day="7-17" onclick="drawRoute('7-17')">7-17</button><button class="" data-day="7-18" onclick="drawRoute('7-18')">7-18</button><button class="" data-day="7-19" onclick="drawRoute('7-19')">7-19</button><button class="" data-day="7.20" onclick="drawRoute('7.20')">7.20</button><button class="" data-day="7.21" onclick="drawRoute('7.21')">7.21</button><button class="" data-day="7.22" onclick="drawRoute('7.22')">7.22</button><button class="" data-day="7.23" onclick="drawRoute('7.23')">7.23</button><button class="" data-day="7.24" onclick="drawRoute('7.24')">7.24</button></div>
-<div class="coord-panel" id="coordPanel"><strong>坐标校准工具（仅维护人员可见）</strong><br/>默认使用网页内置静态坐标，不主动消耗百度检索限额。若百度 API 限额恢复，可在网址后加 <code>?coord=1</code>，点击“用百度检索校准”，成功坐标会暂存到本浏览器，并可下载 JSON 后回写进网页。学生正常打开网页不会看到此面板。<div class="coord-actions"><button onclick="calibrateCoordsFromBaidu()">用百度检索校准</button><button onclick="downloadCoordCache()">下载已缓存坐标 JSON</button><button onclick="clearCoordCache()">清除本机坐标缓存</button></div><div class="coord-log" id="coordLog">等待操作。</div></div>
-<div class="map-wrap"><div class="map" id="map"></div><div class="map-panel"><div class="timeline-item" data-day="7-13"><b>7-13</b><br/>榆中校区 实习动员<br/><span style="color:#6d786d">开展实习动员，分发资料，介绍实习内容、任务、成果、要求和相关注意事项。</span></div><div class="timeline-item" data-day="7-14"><b>7-14</b><br/>什川镇—青城镇 乡村振兴与历史文化名镇<br/><span style="color:#6d786d">（1）乡村全面振兴战略效果评估：什川镇；（2）历史文化名镇保护与开发：青城镇。</span></div><div class="timeline-item" data-day="7-15"><b>7-15</b><br/>兰州市区 城市总体发展与历史街区<br/><span style="color:#6d786d">（1）兰州总体发展：兰州市规划展览馆；（2）城市中心区及历史文化街区：西关—中山桥—白塔山。</span></div><div class="timeline-item" data-day="7-16"><b>7-16</b><br/>兰州市区 自然地质禀赋与山水城市<br/><span style="color:#6d786d">（1）甘肃省自然地质禀赋认知：甘肃省博物馆；（2）兰州市绿色空间及山水之城认知：五泉山。</span></div><div class="timeline-item" data-day="7-17"><b>7-17</b><br/>榆中校区 兰州—西宁比较<br/><span style="color:#6d786d">（1）兰州市和西宁市国土空间开发的关键是什么？（2）大都市兰州周边乡村如何发展？（3）河谷型城市更新的路径是什么？</span></div><div class="timeline-item" data-day="7-18"><b>7-18</b><br/>榆中校区 城市群与强省会<br/><span style="color:#6d786d">（1）兰州—西宁城市群的发展瓶颈是什么？（2）强省会战略对西宁和兰州的影响是什么？</span></div><div class="timeline-item" data-day="7-19"><b>7-19</b><br/>榆中校区 节点城市与地域文化<br/><span style="color:#6d786d">（1）临夏、海东等节点型城市如何发展？（2）特色地域文化塑造的核心路径是什么？</span></div><div class="timeline-item" data-day="7.20"><b>7.20</b><br/>河口村—乐都区碾伯镇 传统古村落与河谷型城市更新<br/><span style="color:#6d786d">（1）中国传统古村落保护与开发：河口古镇/河口村；（2）河谷型城市更新与建设：乐都区、碾伯镇、柳湾彩陶博物馆。住宿：乐都区。</span></div><div class="timeline-item" data-day="7.21"><b>7.21</b><br/>乐都区—平安区 公共空间与都市周边节点城市<br/><span style="color:#6d786d">（1）城市公共空间设计与建设：乐都区、碾伯镇；（2）大都市周边城市发展：平安区、平安驿。住宿：平安区。</span></div><div class="timeline-item" data-day="7.22"><b>7.22</b><br/>西宁市区 高原中心城市与公共文化空间<br/><span style="color:#6d786d">（1）青藏高原中心城市发展：西宁市；（2）多民族文化与特色文化空间生成：青海省博物馆、东关清真大寺公共界面、中心广场—大十字。住宿：西宁市。</span></div><div class="timeline-item" data-day="7.23"><b>7.23</b><br/>西宁市—和政县—临夏市 自然遗产文旅转化与临夏城市风貌<br/><span style="color:#6d786d">（1）古生物资源与文旅转化：和政古生物文化旅游区/古动物化石博物馆；（2）城市绿色发展与特色风貌塑造：临夏市、八坊十三巷。住宿：临夏州。</span></div><div class="timeline-item" data-day="7.24"><b>7.24</b><br/>临夏市—兰州大学 传统街区、民居建筑与返程总结<br/><span style="color:#6d786d">（1）城市绿色发展与特色风貌塑造：临夏市滨河空间、八坊十三巷；（2）传统民居建筑保护利用：东公馆；下午返校。</span></div><div class="timeline-item" data-day="7-25—8.1"><b>7-25—8.1</b><br/>不限 成果整理<br/><span style="color:#6d786d">撰写实习报告，提交实习成果。</span></div></div></div>
+<div class="coord-panel" id="coordPanel"><strong>坐标校准工具（仅维护人员可见）</strong><br/>页面加载后会自动尝试调用百度检索校准坐标；成功结果会保存到本浏览器并立即用于地图，失败点继续沿用已保存或网页内置坐标。若需要人工维护，可在网址后加 <code>?coord=1</code> 查看日志、重新校准或下载缓存 JSON。<div class="coord-actions"><button onclick="calibrateCoordsFromBaidu()">用百度检索校准</button><button onclick="downloadCoordCache()">下载已缓存坐标 JSON</button><button onclick="clearCoordCache()">清除本机坐标缓存</button></div><div class="coord-log" id="coordLog">等待操作。</div></div>
+<div class="auto-coord-status" id="coordStatus">坐标策略：优先自动调用百度检索；成功后本机保存并立即用于地图，失败则沿用已保存或静态坐标。</div>
+<div class="map-wrap"><div class="map" id="map"></div><div class="map-panel"><div class="route-summary" id="routeSummary"><h3>简要时间线与距离</h3><div id="routeSummaryList"></div></div></div></div>
 </div>
 </div></section>
 <section class="section" id="hotels"><div class="container">
@@ -562,6 +578,16 @@ const ROUTE_SEQUENCES = {
   "7.23": ["xining_hotel", "hezheng", "bafang", "linxia_hotel"],
   "7.24": ["linxia_hotel", "donggongguan", "linxia_green", "back_yuzhong"]
 };
+const ROUTE_META = {
+  "7-14": {title:"什川古梨园与青城古镇", window:"08:00-18:00", mode:"校车往返", plan:["08:00 榆中校区集合出发", "10:00-12:00 什川古梨园现场观察", "13:30-15:30 青城古镇街巷与文保观察", "18:00 前后返回榆中校区"]},
+  "7-15": {title:"兰州规划展览馆与黄河中心区", window:"08:30-18:00", mode:"校车+步行", plan:["08:30 榆中校区出发", "10:00-11:30 兰州市规划展览馆", "14:00-16:30 西关、中山桥、白塔山样线", "18:00 前后返回榆中校区"]},
+  "7-16": {title:"甘肃省博物馆与五泉山", window:"08:30-18:00", mode:"校车+步行", plan:["08:30 榆中校区出发", "10:00-12:00 甘肃省博物馆", "14:00-16:00 五泉山山水城市观察", "18:00 前后返回榆中校区"]},
+  "7.20": {title:"榆中至乐都河湟谷地样线", window:"08:00-18:30", mode:"校车转场", plan:["08:00 榆中校区出发", "10:00-11:30 河口古镇观察", "14:00-15:30 柳湾彩陶博物馆", "16:00-17:30 碾伯镇和老城片区", "18:30 前后抵达乐都住宿点"]},
+  "7.21": {title:"乐都公共空间与平安节点城市", window:"08:30-17:30", mode:"短距离转场", plan:["08:30 乐都住宿点出发", "09:00-10:20 乐都公共空间和湟水河沿线", "11:00-12:00 平安驿及周边公共空间", "14:30-16:30 平安区城市走廊补充观察", "17:30 前后抵达平安住宿点"]},
+  "7.22": {title:"西宁高原中心城市一日样线", window:"08:00-18:30", mode:"校车+步行", plan:["08:00 平安住宿点出发", "09:00-10:00 麒麟湾公园和南川河观察", "10:30-11:40 西宁市规划展示类点位", "13:30-15:00 青海省博物馆", "15:30-16:20 东关清真大寺公共界面", "17:00-18:00 中心广场和大十字公共商业空间"]},
+  "7.23": {title:"西宁至和政、临夏长距离转场", window:"08:00-19:00", mode:"校车长距离", plan:["08:00 西宁住宿点出发", "12:30 前后和政午餐与短休", "14:00-15:30 和政古生物文化旅游区", "17:30-18:40 八坊十三巷街区观察", "19:00 前后抵达临夏住宿点"]},
+  "7.24": {title:"临夏城市风貌与返校", window:"08:30-18:00", mode:"校车返程", plan:["08:30 临夏住宿点出发", "09:00-10:00 东公馆", "10:20-11:30 临夏滨河和城市风貌观察", "13:30 返程", "18:00 前后返回兰州大学榆中校区"]}
+};
 const DAY_STYLE = {
   "7-13": {color:"#496D3A", label:"13", name:"7月13日"},
   "7-14": {color:"#8A3B2F", label:"14", name:"7月14日"},
@@ -651,22 +677,25 @@ function readCoordCache(){
   try { return JSON.parse(localStorage.getItem(COORD_CACHE_KEY) || '{}'); } catch(e){ return {}; }
 }
 function writeCoordCache(cache){ localStorage.setItem(COORD_CACHE_KEY, JSON.stringify(cache, null, 2)); }
-function coordLog(msg){ const box=document.getElementById('coordLog'); if(box){ box.textContent += '\n' + msg; box.scrollTop = box.scrollHeight; } }
+function coordLog(msg){ const box=document.getElementById('coordLog'); if(box){ box.textContent += '\n' + msg; box.scrollTop = box.scrollHeight; } const status=document.getElementById('coordStatus'); if(status){ status.textContent = msg; } }
+function setPointCoordFromItem(p, c){
+  p.coordSource = c.source || 'local_cache';
+  p.coordSys = c.coordSys || 'bd09';
+  if(p.coordSys === 'bd09'){
+    p.bdLon = +c.lon; p.bdLat = +c.lat;
+    const gcj = bd09ToGcj02(p.bdLon, p.bdLat);
+    p.lon = gcj[0]; p.lat = gcj[1];
+  }else{
+    p.lon = +c.lon; p.lat = +c.lat;
+    const bd = gcj02ToBd09(p.lon, p.lat);
+    p.bdLon = bd[0]; p.bdLat = bd[1];
+  }
+}
 function applyResolvedCoord(p){
   const cache = readCoordCache();
   const c = cache[p.id];
   if(c && Number.isFinite(+c.lon) && Number.isFinite(+c.lat)){
-    p.coordSource = c.source || 'local_cache';
-    p.coordSys = c.coordSys || 'bd09';
-    if(p.coordSys === 'bd09'){
-      p.bdLon = +c.lon; p.bdLat = +c.lat;
-      const gcj = bd09ToGcj02(p.bdLon, p.bdLat);
-      p.lon = gcj[0]; p.lat = gcj[1];
-    }else{
-      p.lon = +c.lon; p.lat = +c.lat;
-      const bd = gcj02ToBd09(p.lon, p.lat);
-      p.bdLon = bd[0]; p.bdLat = bd[1];
-    }
+    setPointCoordFromItem(p, c);
     return;
   }
   p.coordSource = p.coordSource || 'static_gcj02_fallback';
@@ -697,14 +726,14 @@ function calibrateOnePoint(p){
     const local = new BMap.LocalSearch(cfg.city || undefined, {onSearchComplete:function(results){
       try{
         if(local.getStatus() !== BMAP_STATUS_SUCCESS || !results || !results.getCurrentNumPois || results.getCurrentNumPois() < 1){
-          coordLog('失败：' + p.name + '｜百度无结果，保留静态备用坐标。'); resolve(null); return;
+          coordLog('失败：' + p.name + '｜百度无结果，沿用已保存或静态坐标。'); resolve(null); return;
         }
         let chosen = null;
         for(let i=0;i<Math.min(results.getCurrentNumPois(),5);i++){
           const poi = results.getPoi(i);
           if(shouldAcceptBaiduResult(p, poi)){ chosen = poi; break; }
         }
-        if(!chosen){ coordLog('需人工复核：' + p.name + '｜百度结果不匹配，保留静态备用坐标。'); resolve(null); return; }
+        if(!chosen){ coordLog('需人工复核：' + p.name + '｜百度结果不匹配，沿用已保存或静态坐标。'); resolve(null); return; }
         const item = {id:p.id, name:p.name, lon:chosen.point.lng, lat:chosen.point.lat, coordSys:'bd09', source:'baidu_local_search_cache', query:cfg.query, title:chosen.title || '', address:chosen.address || '', updatedAt:new Date().toISOString()};
         coordLog('成功：' + p.name + ' → ' + item.lon.toFixed(6) + ',' + item.lat.toFixed(6) + '｜' + item.title);
         resolve(item);
@@ -716,15 +745,33 @@ function calibrateOnePoint(p){
 async function calibrateCoordsFromBaidu(){
   if(!window.BMap || !map){ alert('地图尚未加载完成。'); return; }
   const cache = readCoordCache();
-  document.getElementById('coordLog').textContent = '开始调用百度检索校准。若遇到限额/无结果，将自动保留静态备用坐标。';
+  const logBox=document.getElementById('coordLog');
+  if(logBox){ logBox.textContent = '开始调用百度检索校准。若遇到限额/无结果，将自动沿用已保存或静态坐标。'; }
+  let changed=false, success=0, failed=0;
   for(const p of POINTS){
-    // 课堂讨论重复点位不重复消耗检索；直接复用榆中校区。
     if(/^summary/.test(p.id)){ continue; }
     const item = await calibrateOnePoint(p);
-    if(item){ cache[p.id] = item; writeCoordCache(cache); }
+    if(item){ cache[p.id] = item; writeCoordCache(cache); setPointCoordFromItem(p,item); changed=true; success++; }
+    else { failed++; }
     await new Promise(r=>setTimeout(r, 450));
   }
-  coordLog('校准结束。刷新页面后会优先使用本机缓存坐标；建议点击“下载已缓存坐标 JSON”保存，再回写进源代码。');
+  if(changed){ rebuildMapOverlays(); }
+  coordLog(`校准结束：成功更新 ${success} 个，未更新 ${failed} 个。成功坐标已保存到本机缓存并用于当前地图。`);
+}
+async function autoCalibrateCoordsFromBaidu(){
+  if(!window.BMap || !map){ return; }
+  const cache = readCoordCache();
+  let changed=false, success=0, failed=0;
+  coordLog('正在自动调用百度检索校准坐标；失败点将沿用已保存或静态坐标。');
+  for(const p of POINTS){
+    if(/^summary/.test(p.id)){ continue; }
+    const item = await calibrateOnePoint(p);
+    if(item){ cache[p.id] = item; writeCoordCache(cache); setPointCoordFromItem(p,item); changed=true; success++; }
+    else { failed++; }
+    await new Promise(r=>setTimeout(r, 350));
+  }
+  if(changed){ rebuildMapOverlays(); }
+  coordLog(`自动校准完成：成功 ${success} 个，未更新 ${failed} 个；未更新点继续使用已保存或静态坐标。`);
 }
 function downloadCoordCache(){
   const cache = readCoordCache();
@@ -734,18 +781,51 @@ function downloadCoordCache(){
 }
 function clearCoordCache(){ localStorage.removeItem(COORD_CACHE_KEY); coordLog('已清除本机坐标缓存。刷新后恢复网页内置静态坐标。'); }
 
-window.initMap=function(){
-  map = new BMap.Map('map'); map.enableScrollWheelZoom(true); map.addControl(new BMap.NavigationControl()); map.addControl(new BMap.ScaleControl());
-  const center = gcj02ToBd09(102.8,36.2); map.centerAndZoom(new BMap.Point(center[0],center[1]), 8);
-  POINTS.forEach((p,idx)=>{
-    applyResolvedCoord(p); const pt = new BMap.Point(p.bdLon,p.bdLat);
+function estimateLegKm(a,b){
+  const R=6371, toRad=x=>x*Math.PI/180;
+  const dLat=toRad((b.lat||0)-(a.lat||0)), dLon=toRad((b.lon||0)-(a.lon||0));
+  const lat1=toRad(a.lat||0), lat2=toRad(b.lat||0);
+  const h=Math.sin(dLat/2)**2+Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLon/2)**2;
+  return 2*R*Math.asin(Math.sqrt(h))*1.28;
+}
+function routeDistanceKm(day){
+  const arr=seqPoints(day); let sum=0;
+  for(let i=1;i<arr.length;i++){ sum += estimateLegKm(arr[i-1], arr[i]); }
+  return Math.round(sum);
+}
+function renderRouteSummary(){
+  const box=document.getElementById('routeSummaryList'); if(!box) return;
+  box.innerHTML=ROUTE_DAYS.map(day=>{
+    const meta=ROUTE_META[day]||{}; const arr=seqPoints(day); const st=styleOf(day);
+    const path=arr.map(p=>p.name.replace(/\/.*$/,'')).join(' → ');
+    const km=routeDistanceKm(day);
+    const plan=(meta.plan||[]).map(x=>`<li>${x}</li>`).join('');
+    return `<div class="route-summary-item" data-day="${day}" style="border-left-color:${st.color}"><b>${st.name}｜${meta.title||path}</b><div class="route-summary-meta"><span>${meta.window||''}</span><span>点间估算约 ${km} km</span><span>${meta.mode||'校车+步行'}</span></div><div class="route-summary-path">${path}</div><ol class="route-summary-plan">${plan}</ol></div>`;
+  }).join('');
+}
+function rebuildMapOverlays(){
+  if(!map) return;
+  Object.values(markers).forEach(m=>{ try{ map.removeOverlay(m); }catch(e){} });
+  markers={};
+  renderRouteSummary();
+  POINTS.forEach(p=>{
+    const pt = new BMap.Point(p.bdLon,p.bdLat);
     const m = new BMap.Marker(pt, {icon:createDayIcon(p)}); markers[p.id]=m; map.addOverlay(m);
     m.setTitle(`${p.day} · ${p.name}（点击查看简介）`);
     m.addEventListener('click',()=>{ new BMap.InfoWindow(popupHtml(p),{width:320}).open(map,pt); });
   });
+  const active=document.querySelector('.buttons button.active');
+  drawRoute(active ? active.dataset.day : '全部');
+}
+window.initMap=function(){
+  map = new BMap.Map('map'); map.enableScrollWheelZoom(true); map.addControl(new BMap.NavigationControl()); map.addControl(new BMap.ScaleControl());
+  const center = gcj02ToBd09(102.8,36.2); map.centerAndZoom(new BMap.Point(center[0],center[1]), 8);
+  POINTS.forEach(applyResolvedCoord);
   buildDayLegend();
+  renderRouteSummary();
+  rebuildMapOverlays();
   maybeShowCoordPanel();
-  drawRoute('全部');
+  autoCalibrateCoordsFromBaidu();
 }
 function clearLines(){ polylines.forEach(l=>map.removeOverlay(l)); polylines=[]; }
 function routeDays(day){ if(day==='全部') return ROUTE_DAYS; return ROUTE_DAYS.includes(day)?[day]:[]; }
@@ -786,7 +866,7 @@ function drawRoute(day){ if(!map) return; clearLines(); const days=routeDays(day
   const visible=day==='全部'?POINTS:POINTS.filter(p=>p.day===day);
   POINTS.forEach(p=>markers[p.id] && (visible.includes(p)?markers[p.id].show():markers[p.id].hide()));
   const pts=(visible.length?visible:POINTS).map(p=>new BMap.Point(p.bdLon,p.bdLat)); if(pts.length) map.setViewport(pts);
-  document.querySelectorAll('.timeline-item[data-day], tr[data-day], .detail-card[data-day]').forEach(el=>{ const d=el.getAttribute('data-day'); if(day==='全部'||d===day||d==='') el.style.display=''; else el.style.display='none'; });
+  document.querySelectorAll('.timeline-item[data-day], .route-summary-item[data-day], tr[data-day], .detail-card[data-day]').forEach(el=>{ const d=el.getAttribute('data-day'); if(day==='全部'||d===day||d==='') el.style.display=''; else el.style.display='none'; });
   document.querySelectorAll('.buttons button').forEach(b=>b.classList.toggle('active',b.dataset.day===day));
 }
 function focusPoint(id){ const p=POINTS.find(x=>x.id===id); if(!p||!map)return; const pt=new BMap.Point(p.bdLon,p.bdLat); map.centerAndZoom(pt,15); markers[id].show(); markers[id].dispatchEvent('click'); window.scrollTo({top:document.getElementById('map').offsetTop-80,behavior:'smooth'}); }
