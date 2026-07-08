@@ -45,6 +45,8 @@ html,body,button,input,select,textarea,table,.popup-card{font-family:"Source Han
 .route-summary-meta{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
 .route-summary-meta span{background:#edf4e8;border:1px solid #d3dfcc;border-radius:999px;padding:2px 8px;font-size:12px;color:#325438}
 .route-summary-path{font-size:13px;color:#647064;margin:4px 0 7px}
+.route-point-btn{border:1px solid #d3dfcc;background:#f8fbf4;color:#27452f;border-radius:999px;padding:3px 8px;margin:2px 3px 2px 0;font:inherit;font-size:12px;cursor:pointer}
+.route-point-btn:hover{background:#edf4e8}
 .route-summary-plan{margin:6px 0 0;padding-left:18px;color:#4d594d;font-size:13px;line-height:1.7}
 .map-panel{max-height:590px;overflow:auto}
 @media(max-width:860px){.route-summary{padding:13px}.route-summary-plan{font-size:12px}.auto-coord-status{font-size:12px}}
@@ -798,9 +800,10 @@ function renderRouteSummary(){
   box.innerHTML=ROUTE_DAYS.map(day=>{
     const meta=ROUTE_META[day]||{}; const arr=seqPoints(day); const st=styleOf(day);
     const path=arr.map(p=>p.name.replace(/\/.*$/,'')).join(' → ');
+    const pointButtons=arr.map(p=>`<button class="route-point-btn" type="button" onclick="openDetail('${p.id}')">${p.name.replace(/\/.*$/,'')}</button>`).join('');
     const km=routeDistanceKm(day);
     const plan=(meta.plan||[]).map(x=>`<li>${x}</li>`).join('');
-    return `<div class="route-summary-item" data-day="${day}" style="border-left-color:${st.color}"><b>${st.name}｜${meta.title||path}</b><div class="route-summary-meta"><span>${meta.window||''}</span><span>点间估算约 ${km} km</span><span>${meta.mode||'校车+步行'}</span></div><div class="route-summary-path">${path}</div><ol class="route-summary-plan">${plan}</ol></div>`;
+    return `<div class="route-summary-item" data-day="${day}" style="border-left-color:${st.color}"><b>${st.name}｜${meta.title||path}</b><div class="route-summary-meta"><span>${meta.window||''}</span><span>点间估算约 ${km} km</span><span>${meta.mode||'校车+步行'}</span></div><div class="route-summary-path">${pointButtons}</div><ol class="route-summary-plan">${plan}</ol></div>`;
   }).join('');
 }
 function rebuildMapOverlays(){
