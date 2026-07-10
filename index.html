@@ -659,7 +659,7 @@ const COORD_SEARCH_CONFIG = {
   xining_museum:{query:'青海省博物馆', city:'西宁市'},
   xining_plan:{query:'西宁市城市规划建设展览馆 黄河路23号', city:'西宁市'},
   dongguan:{query:'东关清真大寺', city:'西宁市'},
-  xining_center:{query:'西宁广播电视台 西川南路8号', city:'西宁市'},
+  xining_center:{query:'西宁广播电视台', queries:['西宁广播电视台','西宁电视台','西宁广播电视总台','西川南路8号 广播电视台'], city:'西宁市'},
   xining_hotel:{query:'西宁大十字酒店', city:'西宁市'},
   hezheng:{query:'和政古动物化石博物馆', city:'临夏回族自治州'},
   bafang:{query:'八坊十三巷', city:'临夏回族自治州'},
@@ -722,6 +722,10 @@ function maybeShowCoordPanel(){
 }
 function shouldAcceptBaiduResult(p, poi){
   if(!poi || !poi.point) return false;
+  if(p.id === 'xining_center'){
+    const mediaText = ((poi.title||'') + ' ' + (poi.address||'')).replace(/\s/g,'');
+    return /西宁/.test(mediaText) && /(广播电视台|广播电视总台|电视台)/.test(mediaText);
+  }
   const cfg = COORD_SEARCH_CONFIG[p.id] || {};
   const text = ((poi.title||'') + ' ' + (poi.address||'')).replace(/\s/g,'');
   const key = (cfg.query || p.name).split(/[ /—-]/)[0].replace(/公共界面|样本|片区|酒店/g,'');
@@ -733,23 +737,30 @@ function shouldAcceptBaiduResult(p, poi){
 function calibrateOnePoint(p){
   return new Promise(resolve=>{
     const cfg = coordSearchConfig(p);
-    const local = new BMap.LocalSearch(cfg.city || undefined, {onSearchComplete:function(results){
-      try{
-        if(local.getStatus() !== BMAP_STATUS_SUCCESS || !results || !results.getCurrentNumPois || results.getCurrentNumPois() < 1){
-          coordLog('失败：' + p.name + '｜百度无结果，沿用已保存或静态坐标。'); resolve(null); return;
-        }
-        let chosen = null;
-        for(let i=0;i<Math.min(results.getCurrentNumPois(),5);i++){
-          const poi = results.getPoi(i);
-          if(shouldAcceptBaiduResult(p, poi)){ chosen = poi; break; }
-        }
-        if(!chosen){ coordLog('需人工复核：' + p.name + '｜百度结果不匹配，沿用已保存或静态坐标。'); resolve(null); return; }
-        const item = {id:p.id, name:p.name, lon:chosen.point.lng, lat:chosen.point.lat, coordSys:'bd09', source:'baidu_local_search_cache', status:'verified', query:cfg.query, title:chosen.title || '', address:chosen.address || '', updatedAt:new Date().toISOString()};
-        coordLog('成功：' + p.name + ' → ' + item.lon.toFixed(6) + ',' + item.lat.toFixed(6) + '｜' + item.title);
-        resolve(item);
-      }catch(e){ coordLog('异常：' + p.name + '｜' + e.message); resolve(null); }
-    }});
-    try{ local.search(cfg.query || p.name); }catch(e){ coordLog('异常：' + p.name + '｜' + e.message); resolve(null); }
+    const queries = cfg.queries || [cfg.query || p.name];
+    let queryIndex = 0;
+    function searchNext(){
+      if(queryIndex >= queries.length){ coordLog('失败：' + p.name + '｜百度多组关键词均无有效结果，沿用已保存或静态坐标。'); resolve(null); return; }
+      const query = queries[queryIndex++];
+      let local;
+      local = new BMap.LocalSearch(cfg.city || undefined, {onSearchComplete:function(results){
+        try{
+          let chosen = null;
+          if(local.getStatus() === BMAP_STATUS_SUCCESS && results && results.getCurrentNumPois){
+            for(let i=0;i<Math.min(results.getCurrentNumPois(),8);i++){
+              const poi = results.getPoi(i);
+              if(shouldAcceptBaiduResult(p, poi)){ chosen = poi; break; }
+            }
+          }
+          if(!chosen){ searchNext(); return; }
+          const item = {id:p.id, name:p.name, lon:chosen.point.lng, lat:chosen.point.lat, coordSys:'bd09', source:'baidu_local_search_cache', status:'verified', query:cfg.query || query, title:chosen.title || '', address:chosen.address || '', updatedAt:new Date().toISOString()};
+          coordLog('成功：' + p.name + ' → ' + item.lon.toFixed(6) + ',' + item.lat.toFixed(6) + '｜' + item.title);
+          resolve(item);
+        }catch(e){ coordLog('异常：' + p.name + '｜' + e.message); searchNext(); }
+      }});
+      try{ local.search(query); }catch(e){ coordLog('检索异常：' + p.name + '｜' + e.message); searchNext(); }
+    }
+    searchNext();
   });
 }
 async function calibrateCoordsFromBaidu(){
