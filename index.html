@@ -76,7 +76,7 @@ html,body,button,input,select,textarea,table,.popup-card{font-family:"Source Han
 <div class="day-legend" id="dayLegend"></div>
 <p class="point-hint">地图上同一天的点位标记与路线使用同一颜色；点击点位标记可查看该点简介，点击“查看详细资料”可展开完整任务说明。点位图片已统一改为按坐标生成的必应地图影像，避免随机风景图与点位不符。点位坐标以已校核静态坐标为准，正式出行仍以实时导航为准。</p>
 <div class="buttons"><button class="active" data-day="全部" onclick="drawRoute('全部')">全部</button><button class="" data-day="7-13" onclick="drawRoute('7-13')">7-13</button><button class="" data-day="7-14" onclick="drawRoute('7-14')">7-14</button><button class="" data-day="7-15" onclick="drawRoute('7-15')">7-15</button><button class="" data-day="7-16" onclick="drawRoute('7-16')">7-16</button><button class="" data-day="7-17" onclick="drawRoute('7-17')">7-17</button><button class="" data-day="7-18" onclick="drawRoute('7-18')">7-18</button><button class="" data-day="7-19" onclick="drawRoute('7-19')">7-19</button><button class="" data-day="7.20" onclick="drawRoute('7.20')">7.20</button><button class="" data-day="7.21" onclick="drawRoute('7.21')">7.21</button><button class="" data-day="7.22" onclick="drawRoute('7.22')">7.22</button><button class="" data-day="7.23" onclick="drawRoute('7.23')">7.23</button><button class="" data-day="7.24" onclick="drawRoute('7.24')">7.24</button></div>
-<div class="coord-panel" id="coordPanel"><strong>坐标校准工具（仅维护人员可见）</strong><br/>页面加载后会自动尝试调用百度检索校准坐标；成功结果会保存到本浏览器并立即用于地图，失败点继续沿用已保存或网页内置坐标。若需要人工维护，可在网址后加 <code>?coord=1</code> 查看日志、重新校准或下载缓存 JSON。<div class="coord-actions"><button onclick="calibrateCoordsFromBaidu()">用百度检索校准</button><button onclick="downloadCoordCache()">下载已缓存坐标 JSON</button><button onclick="clearCoordCache()">清除本机坐标缓存</button></div><div class="coord-log" id="coordLog">等待操作。</div></div>
+<div class="coord-panel" id="coordPanel"><strong>坐标校准工具（仅维护人员可见）</strong><br/>页面加载后只会调用百度检索新增或尚未核准的点位；成功结果会保存到本浏览器，下次打开直接使用已核准坐标，失败点继续沿用已保存或网页内置坐标。若需要人工维护，可在网址后加 <code>?coord=1</code> 查看日志、校准待处理点位或下载缓存 JSON。<div class="coord-actions"><button onclick="calibrateCoordsFromBaidu()">校准新增/未核准点</button><button onclick="downloadCoordCache()">下载已缓存坐标 JSON</button><button onclick="clearCoordCache()">清除本机坐标缓存</button></div><div class="coord-log" id="coordLog">等待操作。</div></div>
 <div class="auto-coord-status" id="coordStatus">坐标策略：优先自动调用百度检索；成功后本机保存并立即用于地图，失败则沿用已保存或静态坐标。</div>
 <div class="map-wrap"><div class="map" id="map"></div><div class="map-panel"><div class="route-summary" id="routeSummary"><h3>简要时间线与距离</h3><div id="routeSummaryList"></div></div></div></div>
 </div>
@@ -679,6 +679,15 @@ function readCoordCache(){
 }
 function writeCoordCache(cache){ localStorage.setItem(COORD_CACHE_KEY, JSON.stringify(cache, null, 2)); }
 function coordLog(msg){ const box=document.getElementById('coordLog'); if(box){ box.textContent += '\n' + msg; box.scrollTop = box.scrollHeight; } const status=document.getElementById('coordStatus'); if(status){ status.textContent = msg; } }
+function coordSearchConfig(p){ return COORD_SEARCH_CONFIG[p.id] || {query:p.name, city:p.area.split('·')[0]}; }
+function coordCacheItemIsVerified(p, c){
+  if(!c || !Number.isFinite(+c.lon) || !Number.isFinite(+c.lat) || c.status === 'pending') return false;
+  const cfg = coordSearchConfig(p);
+  return c.query === cfg.query && c.name === p.name;
+}
+function pointsNeedingCalibration(cache){
+  return POINTS.filter(p=>!/^summary/.test(p.id) && !coordCacheItemIsVerified(p, cache[p.id]));
+}
 function setPointCoordFromItem(p, c){
   p.coordSource = c.source || 'local_cache';
   p.coordSys = c.coordSys || 'bd09';
@@ -723,7 +732,7 @@ function shouldAcceptBaiduResult(p, poi){
 }
 function calibrateOnePoint(p){
   return new Promise(resolve=>{
-    const cfg = COORD_SEARCH_CONFIG[p.id] || {query:p.name, city:p.area.split('·')[0]};
+    const cfg = coordSearchConfig(p);
     const local = new BMap.LocalSearch(cfg.city || undefined, {onSearchComplete:function(results){
       try{
         if(local.getStatus() !== BMAP_STATUS_SUCCESS || !results || !results.getCurrentNumPois || results.getCurrentNumPois() < 1){
@@ -735,7 +744,7 @@ function calibrateOnePoint(p){
           if(shouldAcceptBaiduResult(p, poi)){ chosen = poi; break; }
         }
         if(!chosen){ coordLog('需人工复核：' + p.name + '｜百度结果不匹配，沿用已保存或静态坐标。'); resolve(null); return; }
-        const item = {id:p.id, name:p.name, lon:chosen.point.lng, lat:chosen.point.lat, coordSys:'bd09', source:'baidu_local_search_cache', query:cfg.query, title:chosen.title || '', address:chosen.address || '', updatedAt:new Date().toISOString()};
+        const item = {id:p.id, name:p.name, lon:chosen.point.lng, lat:chosen.point.lat, coordSys:'bd09', source:'baidu_local_search_cache', status:'verified', query:cfg.query, title:chosen.title || '', address:chosen.address || '', updatedAt:new Date().toISOString()};
         coordLog('成功：' + p.name + ' → ' + item.lon.toFixed(6) + ',' + item.lat.toFixed(6) + '｜' + item.title);
         resolve(item);
       }catch(e){ coordLog('异常：' + p.name + '｜' + e.message); resolve(null); }
@@ -749,30 +758,32 @@ async function calibrateCoordsFromBaidu(){
   const logBox=document.getElementById('coordLog');
   if(logBox){ logBox.textContent = '开始调用百度检索校准。若遇到限额/无结果，将自动沿用已保存或静态坐标。'; }
   let changed=false, success=0, failed=0;
-  for(const p of POINTS){
-    if(/^summary/.test(p.id)){ continue; }
+  const pending = pointsNeedingCalibration(cache);
+  if(!pending.length){ coordLog('当前所有点位均已有已核准坐标，未重复调用百度。'); return; }
+  for(const p of pending){
     const item = await calibrateOnePoint(p);
     if(item){ cache[p.id] = item; writeCoordCache(cache); setPointCoordFromItem(p,item); changed=true; success++; }
     else { failed++; }
     await new Promise(r=>setTimeout(r, 450));
   }
   if(changed){ rebuildMapOverlays(); }
-  coordLog(`校准结束：成功更新 ${success} 个，未更新 ${failed} 个。成功坐标已保存到本机缓存并用于当前地图。`);
+  coordLog(`校准结束：本次处理 ${pending.length} 个待核准点，成功更新 ${success} 个，未更新 ${failed} 个。成功坐标已保存到本机缓存并用于当前地图。`);
 }
 async function autoCalibrateCoordsFromBaidu(){
   if(!window.BMap || !map){ return; }
   const cache = readCoordCache();
   let changed=false, success=0, failed=0;
-  coordLog('正在自动调用百度检索校准坐标；失败点将沿用已保存或静态坐标。');
-  for(const p of POINTS){
-    if(/^summary/.test(p.id)){ continue; }
+  const pending = pointsNeedingCalibration(cache);
+  if(!pending.length){ coordLog('坐标缓存已就绪：直接使用上次成功校准结果，未重复调用百度。'); return; }
+  coordLog(`正在调用百度检索 ${pending.length} 个新增或未核准点；已核准点直接使用缓存。`);
+  for(const p of pending){
     const item = await calibrateOnePoint(p);
     if(item){ cache[p.id] = item; writeCoordCache(cache); setPointCoordFromItem(p,item); changed=true; success++; }
     else { failed++; }
     await new Promise(r=>setTimeout(r, 350));
   }
   if(changed){ rebuildMapOverlays(); }
-  coordLog(`自动校准完成：成功 ${success} 个，未更新 ${failed} 个；未更新点继续使用已保存或静态坐标。`);
+  coordLog(`自动校准完成：本次处理 ${pending.length} 个点，成功 ${success} 个，未更新 ${failed} 个；未更新点继续使用已保存或静态坐标。`);
 }
 function downloadCoordCache(){
   const cache = readCoordCache();
