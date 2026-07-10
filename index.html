@@ -76,8 +76,8 @@ html,body,button,input,select,textarea,table,.popup-card{font-family:"Source Han
 <div class="day-legend" id="dayLegend"></div>
 <p class="point-hint">地图上同一天的点位标记与路线使用同一颜色；点击点位标记可查看该点简介，点击“查看详细资料”可展开完整任务说明。点位图片已统一改为按坐标生成的必应地图影像，避免随机风景图与点位不符。点位坐标以已校核静态坐标为准，正式出行仍以实时导航为准。</p>
 <div class="buttons"><button class="active" data-day="全部" onclick="drawRoute('全部')">全部</button><button class="" data-day="7-13" onclick="drawRoute('7-13')">7-13</button><button class="" data-day="7-14" onclick="drawRoute('7-14')">7-14</button><button class="" data-day="7-15" onclick="drawRoute('7-15')">7-15</button><button class="" data-day="7-16" onclick="drawRoute('7-16')">7-16</button><button class="" data-day="7-17" onclick="drawRoute('7-17')">7-17</button><button class="" data-day="7-18" onclick="drawRoute('7-18')">7-18</button><button class="" data-day="7-19" onclick="drawRoute('7-19')">7-19</button><button class="" data-day="7.20" onclick="drawRoute('7.20')">7.20</button><button class="" data-day="7.21" onclick="drawRoute('7.21')">7.21</button><button class="" data-day="7.22" onclick="drawRoute('7.22')">7.22</button><button class="" data-day="7.23" onclick="drawRoute('7.23')">7.23</button><button class="" data-day="7.24" onclick="drawRoute('7.24')">7.24</button></div>
-<div class="coord-panel" id="coordPanel"><strong>坐标校准工具（仅维护人员可见）</strong><br/>页面加载后只会调用百度检索新增或尚未核准的点位；成功结果会保存到本浏览器，下次打开直接使用已核准坐标，失败点继续沿用已保存或网页内置坐标。若需要人工维护，可在网址后加 <code>?coord=1</code> 查看日志、校准待处理点位或下载缓存 JSON。<div class="coord-actions"><button onclick="calibrateCoordsFromBaidu()">校准新增/未核准点</button><button onclick="downloadCoordCache()">下载已缓存坐标 JSON</button><button onclick="clearCoordCache()">清除本机坐标缓存</button></div><div class="coord-log" id="coordLog">等待操作。</div></div>
-<div class="auto-coord-status" id="coordStatus">坐标策略：优先自动调用百度检索；成功后本机保存并立即用于地图，失败则沿用已保存或静态坐标。</div>
+<div class="coord-panel" id="coordPanel"><strong>坐标维护说明（仅维护人员可见）</strong><br/>本页面只使用已发布的静态坐标，不会自动调用百度检索，也不会读取浏览器旧缓存。发现偏差时，由维护人员核对对应点位后更新静态坐标并重新发布。<div class="coord-log" id="coordLog">静态坐标模式已启用。</div></div>
+<div class="auto-coord-status" id="coordStatus">坐标策略：使用已发布的静态坐标；页面不自动校准，发现偏差后按点位单独更新并发布。</div>
 <div class="map-wrap"><div class="map" id="map"></div><div class="map-panel"><div class="route-summary" id="routeSummary"><h3>简要时间线与距离</h3><div id="routeSummaryList"></div></div></div></div>
 </div>
 </div></section>
@@ -705,13 +705,7 @@ function setPointCoordFromItem(p, c){
   }
 }
 function applyResolvedCoord(p){
-  const cache = readCoordCache();
-  const c = cache[p.id];
-  if(c && Number.isFinite(+c.lon) && Number.isFinite(+c.lat)){
-    setPointCoordFromItem(p, c);
-    return;
-  }
-  p.coordSource = p.coordSource || 'static_gcj02_fallback';
+  p.coordSource = 'static_gcj02';
   const bd = gcj02ToBd09(p.lon,p.lat);
   p.bdLon=bd[0]; p.bdLat=bd[1];
 }
@@ -726,8 +720,8 @@ function maybeShowCoordPanel(){
 function shouldAcceptBaiduResult(p, poi){
   if(!poi || !poi.point) return false;
   if(p.id === 'xining_center'){
-    const mediaText = ((poi.title||'') + ' ' + (poi.address||'')).replace(/\s/g,'');
-    return /西宁/.test(mediaText) && /(广播电视台|广播电视总台|电视台)/.test(mediaText);
+    const sightText = ((poi.title||'') + ' ' + (poi.address||'')).replace(/\s/g,'');
+    return /(浦宁之珠|普宁之珠)/.test(sightText);
   }
   const cfg = COORD_SEARCH_CONFIG[p.id] || {};
   const text = ((poi.title||'') + ' ' + (poi.address||'')).replace(/\s/g,'');
@@ -855,7 +849,7 @@ window.initMap=function(){
   renderRouteSummary();
   rebuildMapOverlays();
   maybeShowCoordPanel();
-  autoCalibrateCoordsFromBaidu();
+  coordLog('坐标策略：使用已发布的静态坐标；页面不会自动调用百度检索或读取旧缓存。');
 }
 function clearLines(){ polylines.forEach(l=>map.removeOverlay(l)); polylines=[]; }
 function routeDays(day){ if(day==='全部') return ROUTE_DAYS; return ROUTE_DAYS.includes(day)?[day]:[]; }
