@@ -640,7 +640,7 @@ applyNewTaskText();
 const CONTACT_DUTY = '1. 乘车出发前和返回之后，协助清点全班人数；<br>2. 协助收集全班同学的实习日志，日志包括每天的实习过程及对当天实习的思考，配图必须为现场拍摄，不得从网上下载；<br>3. 协助制定每天的实习行程计划，包括住宿、参观地点门票预约、乘车时间和返回时间等。';
 function applyContactDuties(){
   const table=document.querySelector('#contacts table'); if(!table) return;
-  table.querySelectorAll('tbody tr').forEach(row=>{const cells=row.querySelectorAll('td'); if(cells.length<4) return; const day=cells[0].textContent.trim(); const extra=['7.17','7.18','7.19'].includes(day) ? '<br><strong>补充：</strong>负责7.17—7.19线下作业环节联络，组织研讨材料收集与提交。' : ''; cells[3].innerHTML=CONTACT_DUTY+extra;});
+  table.querySelectorAll('tbody tr').forEach(row=>{const cells=row.querySelectorAll('td'); if(cells.length<4) return; const day=cells[0].textContent.trim(); const note=['7.17','7.18','7.19'].includes(day) ? '<br><strong>说明：</strong>当天无外出，行程计划按线下作业安排。' : ''; cells[3].innerHTML=CONTACT_DUTY+note;});
 }
 applyContactDuties();
 const ROUTE_SEQUENCES = {
