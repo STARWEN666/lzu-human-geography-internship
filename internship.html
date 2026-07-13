@@ -106,6 +106,7 @@ html,body,button,input,select,textarea,table,.popup-card{font-family:"Source Han
 </div></section>
 <section class="section" id="hotels"><div class="container">
 <h2>四、住宿建议</h2>
+<div class="notice">住宿选择可在现有候选之外，另行筛选150—200元/间/晚、适合2人入住且位置可适当偏一些但条件较好的酒店；最终以实际房价、发票、房量、校车停车和取消政策核验为准。</div>
 <div class="card"><p>住宿按4晚设置：乐都区、平安区、西宁城北、临夏市。以下酒店按用户提供的截图优先列为候选，临夏采用更适合团队的替代选项；房量、发票、早餐和校车上下客条件仍需预订前确认。</p></div>
 <div class="hotel-grid">
 <article class="hotel-card">
@@ -639,6 +640,7 @@ const NEW_TASK_TEXT = {
   '7.22':'（1）西宁市高原中心城市发展与空间格局调研：聚焦城市空间结构、产业体系、交通网络、城镇化发展和公共服务，认识青藏高原中心城市的功能定位与空间格局。（2）西宁民族特色文化空间生成与演化调研：考察民族文化空间特征，分析文化资源、公共空间与城市景观的互动关系。',
   '7.23':'（1）西宁市城市文脉保护与延续调研：梳理西宁城市发展历史，观察城市历史文化空间、自然环境与现代城市建设的联系。（2）临夏市绿色发展与特色风貌塑造调研：以八坊十三巷为重点，分析街区更新、民族文化、公共空间、旅游业态与城市风貌塑造。',
   '7.24':'（1）临夏市城市街巷肌理与空间形态调研：实地走访临夏城市街区，分析街巷尺度、空间组织、公共活动与城市生活。（2）临夏市特色文化生产与传承调研：观察历史建筑、民族文化、非遗业态与城市更新的关系，返程途中认识刘家峡水库峡谷与水域景观。'
+  ,'7-25—8.1':'撰写实习报告，提交实习成果。整理野外影像资料、调研笔记、数据素材与专题研讨成果。结合城市更新、城乡融合、生态屏障建设、城市群发展等地理学前沿理论与学术观点，整合兰州—西宁城市群发展、生态治理、文化保护、空间更新的实证案例与问题分析。完成实习报告的框架搭建、内容撰写、逻辑梳理、校对修改，规范整理全部实习成果，按要求完成汇总与提交。'
 };
 function applyNewTaskText(){
   const schedule=document.querySelector('#schedule'); if(!schedule) return;
@@ -647,6 +649,7 @@ function applyNewTaskText(){
   table.querySelectorAll('tbody tr').forEach(row=>{const cells=row.querySelectorAll('td'); if(cells.length<4) return; const day=cells[0].textContent.trim(); if(NEW_TASK_TEXT[day]) cells[3].textContent=NEW_TASK_TEXT[day];});
 }
 applyNewTaskText();
+document.querySelectorAll('#hotels .card').forEach(card=>{if(card.textContent.includes('其他备选酒店池')) card.remove();});
 const STANDARD_LOG_TASK='完成当日实习日志，包括当天实习过程、实习心得和现场拍摄的照片。';
 function simplifyPointTasks(){
   POINTS.forEach(p=>{if(p.day!=='7-14') p.task=STANDARD_LOG_TASK;});
