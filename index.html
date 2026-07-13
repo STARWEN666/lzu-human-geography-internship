@@ -649,9 +649,8 @@ function applyContactDuties(){
   const offlineRows=rows.filter(row=>['7.17','7.18','7.19'].includes(row.querySelector('td')?.textContent.trim()));
   if(offlineRows.length===3){
     const first=offlineRows[0].querySelectorAll('td');
-    first[0].rowSpan=3; first[0].textContent='7.17—7.19';
     first[3].rowSpan=3; first[3].innerHTML='<strong>线下作业联络</strong><br>当天无外出，行程计划按线下作业安排。';
-    offlineRows.slice(1).forEach(row=>{const cells=row.querySelectorAll('td'); cells[0].remove(); cells[3].remove();});
+    offlineRows.slice(1).forEach(row=>{const cells=row.querySelectorAll('td'); cells[3].remove();});
   }
 }
 applyContactDuties();
