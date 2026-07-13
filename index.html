@@ -668,7 +668,7 @@ function applyContactDuties(){
   mergeDutyGroup(['7.20','7.21','7.22','7.23','7.24']);
   const earlyRows=rows.filter(row=>['7.14','7.15','7.16'].includes(row.querySelector('td')?.textContent.trim()));
   const earlyDuty=earlyRows[0]?.querySelector('td[rowspan="3"]');
-  if(earlyDuty) earlyDuty.innerHTML='1. 乘车出发前和返回之后，协助清点全班人数；<br>2. 协助收集全班同学的实习日志，日志包括每天的实习过程及对当天实习的思考，配图必须为现场拍摄，不得从网上下载；<br>3. 协助制定每天的实习行程计划，包括参观地点门票预约、乘车时间和返回时间等。<br><strong>说明：</strong>7月14—16日当天往返，无住宿安排。';
+  if(earlyDuty) earlyDuty.innerHTML='1. 乘车出发前和返回之后，协助清点全班人数；<br>2. 协助收集全班同学的实习日志，日志包括每天的实习过程及对当天实习的思考，配图必须为现场拍摄，不得从网上下载；<br>3. 协助制定每天的实习行程计划，包括参观地点门票预约、乘车时间和返回时间等。';
 }
 applyContactDuties();
 const ROUTE_SEQUENCES = {
