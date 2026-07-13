@@ -652,6 +652,16 @@ function applyContactDuties(){
     first[3].rowSpan=3; first[3].innerHTML='<strong>线下作业联络</strong>';
     offlineRows.slice(1).forEach(row=>{const cells=row.querySelectorAll('td'); cells[3].remove();});
   }
+  const mergeDutyGroup=(days)=>{
+    const groupRows=rows.filter(row=>days.includes(row.querySelector('td')?.textContent.trim()));
+    if(groupRows.length!==days.length) return;
+    const firstCells=groupRows[0].querySelectorAll('td');
+    const duty=firstCells[3]; if(!duty) return;
+    duty.rowSpan=groupRows.length;
+    groupRows.slice(1).forEach(row=>{const cells=row.querySelectorAll('td'); if(cells[3]) cells[3].remove();});
+  };
+  mergeDutyGroup(['7.14','7.15','7.16']);
+  mergeDutyGroup(['7.20','7.21','7.22','7.23','7.24']);
 }
 applyContactDuties();
 const ROUTE_SEQUENCES = {
