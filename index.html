@@ -66,7 +66,7 @@ html,body,button,input,select,textarea,table,.popup-card{font-family:"Source Han
 <div class="badge-row"><span class="badge">实习日程</span><span class="badge">路线图</span><span class="badge">点位任务</span><span class="badge">住宿建议</span><span class="badge">成果要求</span></div>
 </div>
 </header>
-<nav class="nav"><div class="container"><a href="#schedule">实习日程</a><a href="#contacts">每日联络人</a><a href="#mapsec">路线图</a><a href="#hotels">住宿建议</a><a href="#points">点位任务</a><a href="#outputs">成果要求</a></div></nav>
+<nav class="nav"><div class="container"><a href="#schedule">实习日程</a><a href="#contacts">每日联络人</a><a href="#mapsec">路线图</a><a href="#hotels">住宿建议</a><a href="#points">点位任务</a><a href="#attachments">问卷附件</a><a href="#outputs">成果要求</a></div></nav>
 <main>
 <section class="section" id="schedule"><div class="container">
 <h2>一、实习日程</h2>
@@ -253,7 +253,7 @@ html,body,button,input,select,textarea,table,.popup-card{font-family:"Source Han
 <h3>什川古梨园</h3>
 <p><strong>点位介绍：</strong>什川古梨园位于兰州市皋兰县什川镇黄河沿岸，是兰州近郊乡村旅游、古梨园景观和农业休闲转型的重要样本。点位已定位到古梨园景区范围，而不是什川镇镇区。</p>
 <p><strong>观察重点：</strong>观察古梨园、村庄道路、游客服务、农产品销售、民居更新和公共空间之间的关系。</p>
-<p><strong>现场任务：</strong>围绕“乡村全面振兴战略效果评估”记录产业、生态、文化、治理和生活空间变化。</p>
+<p><strong>现场任务：</strong>围绕“乡村全面振兴战略效果评估”记录产业、生态、文化、治理和生活空间变化；拍摄VLOG，用于Youth乡村和学校公众号；在什川古梨园发放问卷，每组约2份，每份问卷6页，可分组按小组完成。</p>
 <p><strong>建议产出：</strong>什川古梨园乡村振兴五维观察表、1张景区—村庄功能分布草图。</p>
 <div class="link-row"><a class="mini-link" href="https://uri.amap.com/marker?position=104.0036580,36.1539230&amp;name=%E4%BB%80%E5%B7%9D%E5%8F%A4%E6%A2%A8%E5%9B%AD&amp;coordinate=gaode&amp;callnative=1" rel="noopener" target="_blank">打开高德导航</a><button class="mini-link btn-like" onclick="focusPoint('shichuan')">地图定位</button></div>
 </div>
@@ -603,8 +603,12 @@ html,body,button,input,select,textarea,table,.popup-card{font-family:"Source Han
 </div>
 </article></div>
 </div></section>
+<section class="section" id="attachments"><div class="container">
+<h2>六、问卷附件</h2>
+<div class="card"><h3>什川古梨园产业创新调查问卷</h3><p>7月14日什川古梨园现场使用。每组约完成2份，每份问卷共6页，可由小组分工完成。问卷图片须使用现场拍摄照片，不得从网上下载。</p><div class="link-row"><a class="mini-link" href="assets/youth-rural-industry-questionnaire.pdf" download target="_blank" rel="noopener">下载问卷PDF</a></div></div>
+</div></section>
 <section class="section" id="outputs"><div class="container">
-<h2>六、成果要求</h2>
+<h2>七、成果要求</h2>
 <div class="grid">
 <div class="metric"><b>每日记录</b>每人完成观察记录；每组提交照片、样线、问题清单和简短总结。</div>
 <div class="metric"><b>小组成果</b>形成一份主题汇报，围绕乡村振兴、河谷城市、公共空间、历史街区、绿色发展或特色文化任选方向。</div>
@@ -622,7 +626,7 @@ const ROUTE_DAYS = ["7-14", "7-15", "7-16", "7.20", "7.21", "7.22", "7.23", "7.2
 const LOCAL_ASSET_OVERRIDES = {liujiaxia:'assets/liujiaxia-reservoir.png'};
 POINTS.forEach(p => { if (LOCAL_ASSET_OVERRIDES[p.id]) p.img = LOCAL_ASSET_OVERRIDES[p.id]; });
 const NEW_TASK_TEXT = {
-  '7-14':'（1）什川镇乡村全面振兴战略成效评估：从城乡融合视角观察传统产业、人口环境、经济活动、公共服务和文旅融合，分析产业类型、要素流动、城乡关系与乡村振兴成效。（2）青城镇历史文化名镇保护与开发调研：观察传统街巷、古建筑、历史遗存与非遗资源，分析保护规划实施、文旅开发及居民生活之间的关系。<br><strong>现场任务：</strong>1.拍摄VLOG，用于Youth乡村和学校公众号；2.在什川古梨园发放问卷，每组约2份，每份问卷6页，可分组按小组完成。<br><a class="mini-link" href="assets/youth-rural-industry-questionnaire.pdf" download target="_blank" rel="noopener">下载《Youth乡村计划—2026青年入乡—产业创新调查问卷》</a>',
+  '7-14':'（1）什川镇乡村全面振兴战略成效评估：从城乡融合视角观察传统产业、人口环境、经济活动、公共服务和文旅融合，分析产业类型、要素流动、城乡关系与乡村振兴成效。（2）青城镇历史文化名镇保护与开发调研：观察传统街巷、古建筑、历史遗存与非遗资源，分析保护规划实施、文旅开发及居民生活之间的关系。',
   '7-15':'（1）兰州市国土空间与城市总体发展认知：参观规划展览馆，梳理城市结构、地形约束、交通体系、产业布局和公共服务空间。（2）城市中心区历史文化街区保护与更新调研：观察西关—中山桥—白塔山的街巷格局、商业业态、公共空间与历史文化保护更新。',
   '7-16':'（1）甘肃省自然地质与生态资源认知：通过地质博物馆认识地质演化、地貌、矿产资源和古生物，联系自然环境与区域发展。（2）兰州市山水格局与城市绿色空间认知：以五泉山为核心，观察山体公园、宗教建筑、城市绿地和河谷型城市空间关系。',
   '7-17':'结合兰州前期调研成果，开展线下专题研讨：（1）兰州市与西宁市国土空间开发的核心差异是什么？（2）兰州大都市辐射下周边乡村有哪些发展模式？（3）河谷空间特征如何影响城市更新？',
