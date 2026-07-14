@@ -658,6 +658,8 @@ function simplifyPointTasks(){
   if(special) special.task=STANDARD_LOG_TASK;
   const qingcheng=POINTS.find(p=>p.id==='qingcheng');
   if(qingcheng) qingcheng.task='补充手绘青城古镇肌理图。';
+  const hekou=POINTS.find(p=>p.id==='hekou');
+  if(hekou) hekou.task=STANDARD_LOG_TASK+' 每人发放5份问卷。';
   POINTS.forEach(p=>{
     if(p.day==='7-14') return;
     const row=document.querySelector(`#points tr button[onclick*="${p.id}"]`)?.closest('tr');
@@ -676,6 +678,11 @@ function simplifyPointTasks(){
   const qcCard=document.getElementById('card-qingcheng');
   const qcTask=qcCard ? [...qcCard.querySelectorAll('p')].find(el=>el.querySelector('strong')?.textContent.includes('现场任务')) : null;
   if(qcTask) qcTask.innerHTML='<strong>现场任务：</strong>补充手绘青城古镇肌理图。';
+  const hkRow=document.querySelector('#points tr button[onclick*="hekou"]')?.closest('tr');
+  if(hkRow && hkRow.cells[4]) hkRow.cells[4].textContent=STANDARD_LOG_TASK+' 每人发放5份问卷。';
+  const hkCard=document.getElementById('card-hekou');
+  const hkTask=hkCard ? [...hkCard.querySelectorAll('p')].find(el=>el.querySelector('strong')?.textContent.includes('现场任务')) : null;
+  if(hkTask) hkTask.innerHTML='<strong>现场任务：</strong>'+STANDARD_LOG_TASK+' 每人发放5份问卷。';
 }
 simplifyPointTasks();
 function removePointOutputsAndMergeTasks(){
