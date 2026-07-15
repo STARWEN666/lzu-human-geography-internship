@@ -55,7 +55,8 @@ html,body,button,input,select,textarea,table,.popup-card{font-family:"Source Han
 <style>
 .contact-table th:nth-child(2),.contact-table td:nth-child(2){min-width:140px;width:140px;white-space:nowrap}
 .contact-table th:nth-child(3),.contact-table td:nth-child(3){min-width:150px;white-space:nowrap}
-.day-status{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:999px;font-size:12px;line-height:1.4;background:#eef3e8;color:#31543a;white-space:nowrap}.day-status.in-progress{background:#fff4d6;color:#795619}.day-status.pending{background:#f1f2f3;color:#6f7478}.change-cell{min-width:220px;color:#5d4a28;background:#fffaf0}
+.contact-table th:nth-child(4),.contact-table td:nth-child(4){min-width:420px}
+.day-status{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:999px;font-size:12px;line-height:1.4;background:#eef3e8;color:#31543a;white-space:nowrap}.day-status.in-progress{background:#fff4d6;color:#795619}.day-status.pending{background:#f1f2f3;color:#6f7478}.change-cell{min-width:300px;color:#5d4a28;background:#fffaf0}
 </style>
 </head>
 <body>
@@ -66,7 +67,7 @@ html,body,button,input,select,textarea,table,.popup-card{font-family:"Source Han
 <p>主题：兰州及周边县区、河湟谷地、西宁高原中心城市、临夏州特色地域文化与绿色发展。</p>
 </div>
 </header>
-<nav class="nav"><div class="container"><a href="#schedule">实习日程</a><a href="#contacts">每日联络人</a><a href="#mapsec">路线图</a><a href="#hotels">住宿建议</a><a href="#points">点位任务</a><a href="#attachments">问卷附件</a><a href="#outputs">成果要求</a></div></nav>
+<nav class="nav"><div class="container"><a href="#schedule">实习日程</a><a href="#contacts">每日联络人</a><a href="#mapsec">路线图</a><a href="#hotels">住宿建议</a><a href="#points">点位任务</a><a href="#outputs">成果要求</a></div></nav>
 <main>
 <section class="section" id="schedule"><div class="container">
 <h2>一、实习日程</h2>
@@ -658,6 +659,8 @@ function simplifyPointTasks(){
   if(special) special.task=STANDARD_LOG_TASK;
   const qingcheng=POINTS.find(p=>p.id==='qingcheng');
   if(qingcheng) qingcheng.task='补充手绘青城古镇肌理图。';
+  const xiguan=POINTS.find(p=>p.id==='xiguan_baita');
+  if(xiguan) xiguan.task=STANDARD_LOG_TASK+' 每人完成2份调查问卷。';
   const hekou=POINTS.find(p=>p.id==='hekou');
   if(hekou) hekou.task=STANDARD_LOG_TASK+' 每人发放5份问卷。';
   POINTS.forEach(p=>{
@@ -678,6 +681,11 @@ function simplifyPointTasks(){
   const qcCard=document.getElementById('card-qingcheng');
   const qcTask=qcCard ? [...qcCard.querySelectorAll('p')].find(el=>el.querySelector('strong')?.textContent.includes('现场任务')) : null;
   if(qcTask) qcTask.innerHTML='<strong>现场任务：</strong>补充手绘青城古镇肌理图。';
+  const xgRow=document.querySelector('#points tr button[onclick*="xiguan_baita"]')?.closest('tr');
+  if(xgRow && xgRow.cells[4]) xgRow.cells[4].textContent=STANDARD_LOG_TASK+' 每人完成2份调查问卷。';
+  const xgCard=document.getElementById('card-xiguan_baita');
+  const xgTask=xgCard ? [...xgCard.querySelectorAll('p')].find(el=>el.querySelector('strong')?.textContent.includes('现场任务')) : null;
+  if(xgTask) xgTask.innerHTML='<strong>现场任务：</strong>'+STANDARD_LOG_TASK+' 每人完成2份调查问卷。';
   const hkRow=document.querySelector('#points tr button[onclick*="hekou"]')?.closest('tr');
   if(hkRow && hkRow.cells[4]) hkRow.cells[4].textContent=STANDARD_LOG_TASK+' 每人发放5份问卷。';
   const hkCard=document.getElementById('card-hekou');
@@ -705,12 +713,13 @@ function applyScheduleStatusAndChanges(){
     if(cells.length===4){const td=document.createElement('td'); td.className='change-cell'; row.appendChild(td);}
     row.cells[4].className='change-cell'; row.cells[4].textContent=changes[label]||'待补充';
     const date=toDate(label); if(!date || cells[0].querySelector('.day-status')) return;
-    const sameDay=now.toDateString()===date.toDateString(); const completed=now>date || (sameDay && now.getHours()>=20);
+    const sameDay=now.toDateString()===date.toDateString(); const completed=now>date || (sameDay && now.getHours()>=19);
     const status=document.createElement('span'); status.className='day-status '+(completed?'':' '+(sameDay?'in-progress':'pending')); status.textContent=completed?'已完成':(sameDay?'进行中':'未开始'); cells[0].appendChild(status);
   });
   document.querySelectorAll('#schedule td').forEach(td=>{if(td.textContent.includes('共分5个小组')) td.textContent=td.textContent.replace('共分5个小组','共分6个小组');});
 }
 applyScheduleStatusAndChanges();
+document.getElementById('attachments')?.remove();
 const CONTACT_DUTY = '1. 乘车出发前和返回之后，协助清点全班人数；<br>2. 协助收集全班同学的实习日志，日志包括每天的实习过程及对当天实习的思考，配图必须为现场拍摄，不得从网上下载；<br>3. 协助制定每天的实习行程计划，包括住宿、参观地点门票预约、乘车时间和返回时间等。';
 function applyContactDuties(){
   const table=document.querySelector('#contacts table'); if(!table) return;
