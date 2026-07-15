@@ -56,6 +56,7 @@ html,body,button,input,select,textarea,table,.popup-card{font-family:"Source Han
 .contact-table th:nth-child(2),.contact-table td:nth-child(2){min-width:140px;width:140px;white-space:nowrap}
 .contact-table th:nth-child(3),.contact-table td:nth-child(3){min-width:150px;white-space:nowrap}
 .contact-table th:nth-child(4),.contact-table td:nth-child(4){min-width:420px}
+.schedule-table th:nth-child(4),.schedule-table td:nth-child(4),#schedule table th:nth-child(4),#schedule table td:nth-child(4){min-width:520px}
 .day-status{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:999px;font-size:12px;line-height:1.4;background:#eef3e8;color:#31543a;white-space:nowrap}.day-status.in-progress{background:#fff4d6;color:#795619}.day-status.pending{background:#f1f2f3;color:#6f7478}.change-cell{min-width:300px;color:#5d4a28;background:#fffaf0}
 </style>
 </head>
@@ -713,7 +714,8 @@ function applyScheduleStatusAndChanges(){
     if(cells.length===4){const td=document.createElement('td'); td.className='change-cell'; row.appendChild(td);}
     row.cells[4].className='change-cell'; row.cells[4].textContent=changes[label]||'待补充';
     const date=toDate(label); if(!date || cells[0].querySelector('.day-status')) return;
-    const sameDay=now.toDateString()===date.toDateString(); const completed=now>date || (sameDay && now.getHours()>=19);
+    const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    const sameDay=today.getTime()===date.getTime(); const completed=date.getTime()<today.getTime() || (sameDay && now.getHours()>=19);
     const status=document.createElement('span'); status.className='day-status '+(completed?'':' '+(sameDay?'in-progress':'pending')); status.textContent=completed?'已完成':(sameDay?'进行中':'未开始'); cells[0].appendChild(status);
   });
   document.querySelectorAll('#schedule td').forEach(td=>{if(td.textContent.includes('共分5个小组')) td.textContent=td.textContent.replace('共分5个小组','共分6个小组');});
