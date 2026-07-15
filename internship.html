@@ -616,9 +616,10 @@ html,body,button,input,select,textarea,table,.popup-card{font-family:"Source Han
 <section class="section" id="outputs"><div class="container">
 <h2>七、成果要求</h2>
 <div class="grid">
-<div class="metric"><b>每日记录</b>每人完成观察记录；每组提交照片、样线、问题清单和简短总结。</div>
+<div class="metric"><b>每日实习日志</b>7月14—16日、7月20—24日共8次。内容包括当天所见所闻、每日思考，并附本人现场拍摄的照片，不得使用网上下载图片。</div>
 <div class="metric"><b>小组成果</b>形成一份主题汇报，围绕乡村振兴、河谷城市、公共空间、历史街区、绿色发展或特色文化任选方向。</div>
-<div class="metric"><b>个人报告</b>7月25日至8月1日完成实习报告，结合现场观察、图片、地图和课堂讨论。</div>
+<div class="metric"><b>提交与评分</b>每天22:30前将实习日志交给组长，23:00后不再接收。每日实习报告每次5—10分，按时提交至少5分，内容完整、思考充分可得10分；综合实习报告20分。</div>
+<div class="metric"><b>小组提醒</b>各小组成员相互提醒，按时完成日志并提交，避免迟交、漏交。</div>
 <div class="metric"><b>纪律提醒</b>不擅自离队；不进入未开放区域或居民私宅；宗教与民族文化场所注意着装、拍照和访谈礼仪。</div>
 </div>
 </div></section>
@@ -719,6 +720,7 @@ function applyScheduleStatusAndChanges(){
     const status=document.createElement('span'); status.className='day-status '+(completed?'':' '+(sameDay?'in-progress':'pending')); status.textContent=completed?'已完成':(sameDay?'进行中':'未开始'); cells[0].appendChild(status);
   });
   document.querySelectorAll('#schedule td').forEach(td=>{if(td.textContent.includes('共分5个小组')) td.textContent=td.textContent.replace('共分5个小组','共分6个小组');});
+  document.querySelectorAll('#schedule td').forEach(td=>{if(td.textContent.includes('每天结束前上传实习报告')) td.textContent=td.textContent.replace('每天结束前上传实习报告','每天22:30前将实习日志交给组长，23:00后不再接收');});
 }
 applyScheduleStatusAndChanges();
 document.getElementById('attachments')?.remove();
@@ -1008,7 +1010,7 @@ function renderRouteSummary(){
     const path=arr.map(p=>p.name.replace(/\/.*$/,'')).join(' → ');
     const pointButtons=arr.map(p=>`<button class="route-point-btn" type="button" onclick="openDetail('${p.id}')">${p.name.replace(/\/.*$/,'')}</button>`).join('');
     const km=routeDistanceKm(day);
-    const plan=(meta.plan||[]).map(x=>`<li>${x}</li>`).join('');
+    const plan=(meta.plan||[]).map(x=>`<li>${String(x).replace('当日结束前：上传实习日志（实习过程、实习心得和现场照片）','22:30前将实习日志交给组长，23:00后不再接收')}</li>`).join('');
     return `<div class="route-summary-item" data-day="${day}" style="border-left-color:${st.color}"><b>${st.name}｜${meta.title||path}</b><div class="route-summary-meta"><span>${meta.window||''}</span><span>未查询前直线折算约 ${km} km</span><span>${meta.mode||'校车+步行'}</span></div><div class="route-summary-path">${pointButtons}</div><ol class="route-summary-plan">${plan}</ol></div>`;
   }).join('');
 }
