@@ -635,7 +635,7 @@ POINTS.forEach(p => { if (LOCAL_ASSET_OVERRIDES[p.id]) p.img = LOCAL_ASSET_OVERR
 const NEW_TASK_TEXT = {
   '7-14':'（1）什川镇乡村全面振兴战略成效评估：立足城乡融合发展视角，实地调研传统产业发展、人口环境、经济活动、公共服务供给和文旅融合现状，分析产业类型、要素流动、城乡关系与乡村振兴成效。（2）青城镇历史文化名镇保护与开发调研：实地考察传统街巷、古建筑群落、历史遗存与非遗文化资源，调研保护规划实施状况，分析文化资源保护与旅游开发的平衡机制。',
   '7-15':'（1）兰州市国土空间与城市总体发展认知：参观兰州市规划展览馆，梳理城市结构、地形约束、交通体系、产业布局和公共服务供给，认识兰州河谷型城市空间格局。（2）城市中心区历史文化街区保护与更新调研：走访西关—中山桥—白塔山片区，分析历史街区保护、城市更新、空间优化与历史文化传承。',
-  '7-16':'（1）甘肃省自然地质与生态资源认知：参观甘肃地质博物馆，学习区域地质构造、地貌演化、水土流失、生态格局与地质环境特征，掌握兰州及周边自然地理基础。（2）兰州市山水格局与城市绿色空间认知：以五泉山为核心，观察山体、城市绿地、公共空间与河谷型城市格局的关系。',
+  '7-16':'（1）甘肃省自然地质与生态资源认知：参观甘肃地质博物馆，学习区域地质构造、地貌演化、水土流失、生态格局与地质环境特征，掌握兰州及周边自然地理基础。（2）兰州市山水格局、宗教文化与城市绿色空间认知：五泉山位于兰州市城关区皋兰山北麓，观察山体、城市绿地、宗教空间与河谷型城市格局的关系，比较藏传佛教与汉传佛教的差异，并手绘五泉山及周边点位分布图。',
   '7-17':'结合兰州前期实地调研成果，对接城市更新与城乡融合前沿议题，开展专题深度研讨：（1）兰州市与西宁市国土空间开发的核心是什么，两个城市有何异同？（2）探究兰州大都市辐射下周边乡村的发展模式，剖析城乡融合发展路径。（3）结合河谷空间特征，梳理兰州市城市更新的模式、难点与优化方向。',
   '7-18':'围绕兰州城市群发展与强省会战略开展专题研讨：（1）兰州—西宁城市群发展的主要瓶颈是什么？（2）强省会战略对兰州、西宁及周边地区的空间发展、要素流动和功能联系有何影响？',
   '7-19':'聚焦节点城市发展与地域文化塑造开展专题研讨：（1）基于兰州—西宁城市群节点城市发展差异，分析节点城市的发展动力与功能定位。（2）立足多民族地域特征，挖掘地域文化内核，分析文化资源与城市高质量发展及民族团结进步建设的内在联系。',
@@ -665,6 +665,8 @@ function simplifyPointTasks(){
   if(xiguan) xiguan.task=STANDARD_LOG_TASK+' 每人完成2份调查问卷。';
   const hekou=POINTS.find(p=>p.id==='hekou');
   if(hekou) hekou.task=STANDARD_LOG_TASK+' 每人发放5份问卷。';
+  const wuquan=POINTS.find(p=>p.id==='wuquanshan');
+  if(wuquan) wuquan.task='五泉山位于兰州市城关区皋兰山北麓。观察五泉山山体、绿地、宗教空间与城市道路的关系；比较藏传佛教与汉传佛教在建筑形制、仪式活动和空间组织上的差异；手绘五泉山及周边宗教、绿地、道路的分布图。';
   POINTS.forEach(p=>{
     if(p.day==='7-14') return;
     const row=document.querySelector(`#points tr button[onclick*="${p.id}"]`)?.closest('tr');
@@ -693,6 +695,11 @@ function simplifyPointTasks(){
   const hkCard=document.getElementById('card-hekou');
   const hkTask=hkCard ? [...hkCard.querySelectorAll('p')].find(el=>el.querySelector('strong')?.textContent.includes('现场任务')) : null;
   if(hkTask) hkTask.innerHTML='<strong>现场任务：</strong>'+STANDARD_LOG_TASK+' 每人发放5份问卷。';
+  const wqRow=document.querySelector('#points tr button[onclick*="wuquanshan"]')?.closest('tr');
+  if(wqRow && wqRow.cells[4]) wqRow.cells[4].textContent=wuquan?.task||'';
+  const wqCard=document.getElementById('card-wuquanshan');
+  const wqTask=wqCard ? [...wqCard.querySelectorAll('p')].find(el=>el.querySelector('strong')?.textContent.includes('现场任务')) : null;
+  if(wqTask) wqTask.innerHTML='<strong>现场任务：</strong>'+(wuquan?.task||'');
 }
 simplifyPointTasks();
 function removePointOutputsAndMergeTasks(){
