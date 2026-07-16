@@ -711,7 +711,7 @@ removePointOutputsAndMergeTasks();
 function applyScheduleStatusAndChanges(){
   const table=document.querySelector('#schedule table'); if(!table) return;
   const head=table.querySelector('thead tr'); if(head && !head.querySelector('.change-head')){const th=document.createElement('th'); th.className='change-head'; th.textContent='变动情况'; head.appendChild(th);}
-  const changes={'7-14':'无发放问卷与VLOG拍摄，将后期暑期实践相关成员开展。'};
+  const changes={'7-14':'无发放问卷与VLOG拍摄，将后期暑期实践相关成员开展。','7-16':'补充藏传佛教与汉传佛教差异比较；明确五泉山位于兰州市城关区皋兰山北麓；增加五泉山及周边宗教、绿地、道路分布手绘图任务。'};
   const toDate=label=>{if(label==='7-25—8.1') return new Date(2026,7,1); const m=label.match(/^7[-.](\d{1,2})$/); return m?new Date(2026,6,+m[1]):null;};
   const now=new Date();
   table.querySelectorAll('tbody tr').forEach(row=>{
